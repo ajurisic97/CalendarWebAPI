@@ -17,6 +17,10 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Mappers\" />
+    <Folder Include="Dtos\" />
+    <Folder Include="Services\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
