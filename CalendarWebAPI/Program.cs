@@ -23,3 +23,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+/*
+ * 
+ Scaffold-DbContext "Data Source=.;Initial Catalog=Calendar;User ID=sa;Password=Andelo1234;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False" Microsoft.EntityFrameworkCore.SqlServer -OutputDir DbModels -UseDatabaseNames -Force -Context "DbContext" -Schema "Catalog","Person"
+ * */
