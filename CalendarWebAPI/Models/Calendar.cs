@@ -11,8 +11,6 @@ namespace CalendarWebAPI.Models
         public Guid? Id { get; set; }
         public Creator Creator { get; set; }
         public Calendar Paent { get; set; }
-
-        public virtual ICollection<Calendar> SubCalendar { get; set; }
         public int Year { get; set; }
 
         public string Description { get; set; }
