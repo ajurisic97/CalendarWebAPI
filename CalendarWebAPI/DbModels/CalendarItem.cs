@@ -7,7 +7,7 @@ namespace CalendarWebAPI.DbModels
     {
         public CalendarItem()
         {
-            Schedulers = new HashSet<Scheduler>();
+            SchedulerItems = new HashSet<SchedulerItem>();
             Shifts = new HashSet<Shift>();
         }
 
@@ -23,7 +23,7 @@ namespace CalendarWebAPI.DbModels
         public bool? IsApproved { get; set; }
 
         public virtual Calendar Calendar { get; set; } = null!;
-        public virtual ICollection<Scheduler> Schedulers { get; set; }
+        public virtual ICollection<SchedulerItem> SchedulerItems { get; set; }
         public virtual ICollection<Shift> Shifts { get; set; }
     }
 }

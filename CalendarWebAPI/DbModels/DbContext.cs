@@ -25,7 +25,9 @@ namespace CalendarWebAPI.DbModels
         public virtual DbSet<Holiday> Holidays { get; set; } = null!;
         public virtual DbSet<Person> People { get; set; } = null!;
         public virtual DbSet<PersonalIncome> PersonalIncomes { get; set; } = null!;
+        public virtual DbSet<Recurring> Recurrings { get; set; } = null!;
         public virtual DbSet<Scheduler> Schedulers { get; set; } = null!;
+        public virtual DbSet<SchedulerItem> SchedulerItems { get; set; } = null!;
         public virtual DbSet<Shift> Shifts { get; set; } = null!;
         public virtual DbSet<TaxGroup> TaxGroups { get; set; } = null!;
         public virtual DbSet<TaxInTaxGroup> TaxInTaxGroups { get; set; } = null!;
@@ -205,6 +207,12 @@ namespace CalendarWebAPI.DbModels
                     .HasDefaultValueSql("('Redovan rad')");
 
                 entity.Property(e => e.Type).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Reccuring)
+                    .WithMany(p => p.Events)
+                    .HasForeignKey(d => d.ReccuringId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Events_Recurrings");
             });
 
             modelBuilder.Entity<Holiday>(entity =>
@@ -287,19 +295,20 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.Name).HasMaxLength(255);
             });
 
+            modelBuilder.Entity<Recurring>(entity =>
+            {
+                entity.ToTable("Recurrings", "Catalog");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.ReccuringType).HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Scheduler>(entity =>
             {
                 entity.ToTable("Scheduler", "Person");
 
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-
-                entity.Property(e => e.Name).HasMaxLength(50);
-
-                entity.HasOne(d => d.CalendarItems)
-                    .WithMany(p => p.Schedulers)
-                    .HasForeignKey(d => d.CalendarItemsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Scheduler_CalendarItems");
 
                 entity.HasOne(d => d.Event)
                     .WithMany(p => p.Schedulers)
@@ -312,6 +321,25 @@ namespace CalendarWebAPI.DbModels
                     .HasForeignKey(d => d.PersonId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Scheduler_People");
+            });
+
+            modelBuilder.Entity<SchedulerItem>(entity =>
+            {
+                entity.ToTable("SchedulerItems", "Person");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.HasOne(d => d.CalendarItems)
+                    .WithMany(p => p.SchedulerItems)
+                    .HasForeignKey(d => d.CalendarItemsId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SchedulerItems_CalendarItems");
+
+                entity.HasOne(d => d.Scheduler)
+                    .WithMany(p => p.SchedulerItems)
+                    .HasForeignKey(d => d.SchedulerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SchedulerItems_Scheduler");
             });
 
             modelBuilder.Entity<Shift>(entity =>
