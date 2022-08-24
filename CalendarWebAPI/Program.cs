@@ -13,9 +13,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //REPOSITORIES
 builder.Services.AddScoped<CalendarItemsRepository>();
+builder.Services.AddScoped<SchedulerRepository>();
 //SERVICES
 builder.Services.AddScoped<CalendarItemsService>();
-
+builder.Services.AddScoped<SchedulerService>();
 
 
 builder.Services.AddControllers().AddNewtonsoftJson();
