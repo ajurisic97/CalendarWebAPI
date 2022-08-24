@@ -1,6 +1,7 @@
 ﻿using CalendarWebAPI.DbModels;
 using CalendarWebAPI.Dtos;
 using CalendarWebAPI.Mappers;
+
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -49,7 +50,6 @@ namespace CalendarWebAPI.Repositories
             return result.ToList();
         }
 
-        //Treba izmjeniti working days, prilagoditi sve osim master calendara (npr. zupanijski nema 365 dana već samo npr. 2 calendaritema)
         public List<CalendarItem> FillCalendarItems(Models.Calendar calendar)
         {
             List<CalendarItem> items = new List<CalendarItem>();
@@ -59,17 +59,26 @@ namespace CalendarWebAPI.Repositories
             var rangeDates = (end - start).Days;
             Models.CalendarItem item;
             var holidays = _dbContext.Holidays.Select(x => new { x.DateDay, x.DateMonth });
-            var WeekDays = _dbContext.WorkingDays.Select(x => new { x.Sunday,x.Monday, x.Tuseday, x.Wednesday, x.Thursday, x.Friday, x.Sathurday}).FirstOrDefault();
-            var test = tempDate.Date.DayOfWeek.ToString();  
+            var WeekDays = _dbContext.WorkingDays.Select(x => new Models.WorkingDays( x.Monday, x.Tuseday, x.Wednesday, x.Thursday, x.Friday, x.Sathurday, x.Sunday)).FirstOrDefault();
+            var dict = new Dictionary<string, bool>();
+            dict.Add("Monday", WeekDays.Monday); dict.Add("Tuesday", WeekDays.Tuesday); dict.Add("Wednesday", WeekDays.Wednesday); dict.Add("Thursday", WeekDays.Thursday); 
+            dict.Add("Friday", WeekDays.Friday); dict.Add("Saturday", WeekDays.Saturday); dict.Add("Sunday", WeekDays.Sunday);
+
+            var workingDay = true;
+            var weekend = false;
             for (int i = 0; i <= rangeDates; i++)
             {
-                var nonWorking = false;
-                //if (WeekDays[tempDate.Date.DayOfWeek.ToString()]==1 || holiday)
-                //{
-
-                //}
-                var holiday = holidays.Any(x => (x.DateDay).Equals(tempDate.Day.ToString()) && x.DateMonth.Equals(tempDate.Month.ToString()));
-                var workingDay = !(nonWorking || holiday);
+                var currentDay = tempDate.ToString("dddd");
+                workingDay = dict[currentDay];
+                if(currentDay.Equals("Sunday") || currentDay.Equals("Saturday"))
+                {
+                    weekend = true;
+                }
+                var holiday = holidays.Any(x => (x.DateDay).Equals(currentDay) && x.DateMonth.Equals(tempDate.Month.ToString()));
+                if (holiday)
+                {
+                    workingDay = false;
+                }
                 item = new Models.CalendarItem(null, calendar, calendar.Description, tempDate, holiday, weekend, workingDay, false, true, calendar.IsApproved);
                 var dbItem = FullCalendarMapper.ToDatabase(item);
                 items.Add(dbItem);
@@ -81,6 +90,7 @@ namespace CalendarWebAPI.Repositories
         public Models.Calendar AddCalendar(Models.Calendar calendar)
         {
             var items = FillCalendarItems(calendar);
+            calendar.CreatedDate = DateTime.Now;
             var dbCalendar = CalendarMapper.ToDatabase(calendar);
             _dbContext.Calendars.Add(dbCalendar);
             _dbContext.CalendarItems.AddRange(items);
@@ -112,6 +122,7 @@ namespace CalendarWebAPI.Repositories
 
         public void Edit(Models.Calendar calendar)
         {
+            calendar.CreatedDate = DateTime.Now;
             var dbCalendar = CalendarMapper.ToDatabase(calendar);
             var x = _dbContext.Calendars.AsNoTracking().FirstOrDefault(cal => cal.Id == dbCalendar.Id);
             dbCalendar.RowVersion = x.RowVersion;
