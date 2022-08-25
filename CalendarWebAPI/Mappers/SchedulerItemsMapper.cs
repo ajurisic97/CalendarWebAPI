@@ -6,12 +6,19 @@ namespace CalendarWebAPI.Mappers
     {
         public static SchedulerItem FromDatabase(DbModels.SchedulerItem sidb)
         {
-            return new SchedulerItem(sidb.Id, sidb.StartTime, sidb.EndTime,sidb.CalendarItems.Date.Value);
+            return new SchedulerItem(sidb.StartTime, sidb.EndTime,sidb.CalendarItems.Date.Value);
         }
 
-        public static DbModels.SchedulerItem ToDatabase(SchedulerItem si)
+        public static DbModels.SchedulerItem ToDatabase(Guid schedulerId,Guid calendarItemId,SchedulerItem si)
         {
-            return null;
+            return new DbModels.SchedulerItem
+            {
+                StartTime = si.StartTime,
+                EndTime = si.EndTime,
+                SchedulerId = schedulerId,
+                CalendarItemsId = calendarItemId,
+
+            };
         }
     }
 }

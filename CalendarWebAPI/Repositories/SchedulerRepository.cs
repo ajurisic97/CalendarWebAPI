@@ -45,9 +45,17 @@ namespace CalendarWebAPI.Repositories
         public IEnumerable<Models.FullSchedulerItem> GetByPersonAndDate(Guid id,DateTime dt, DateTime dt2)
         {
             var result = _calendarContext.Schedulers.Where(x => x.PersonId == id).Select(GetSchedulerProjection(dt,dt2)).ToList();
-            //var filtered = result.Where(x => x.SchedulersItems.Any());
-
             return result;
+        }
+
+        public Models.SchedulerItem AddSchedulerItem(Guid schedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
+        {
+            var calendarItem = _calendarContext.CalendarItems.Where(x=>x.Date == dt).FirstOrDefault();
+            var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId,calendarItem.Id,schedulerItem);
+            _calendarContext.SchedulerItems.Add(dbScheduler);
+            _calendarContext.SaveChanges();
+            return schedulerItem;
+
         }
 
 

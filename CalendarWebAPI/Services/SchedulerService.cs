@@ -25,6 +25,11 @@ namespace CalendarWebAPI.Services
             return _schedulerRepository.GetByPersonAndDate(id,dt,dt2);
         }
 
+        public Models.SchedulerItem AddSchedulerItem(Guid SchedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
+        {
+            return _schedulerRepository.AddSchedulerItem(SchedulerId, dt, schedulerItem);
+        }
+
 
     }
 }

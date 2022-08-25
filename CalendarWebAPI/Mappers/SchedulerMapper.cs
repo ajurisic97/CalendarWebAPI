@@ -8,5 +8,7 @@ namespace CalendarWebAPI.Mappers
         {
             return new Scheduler(scheduler.Id, EventMapper.FromDatabase(scheduler.Event), PersonMapper.FromDatabase(scheduler.Person));
         }
+
+
     }
 }
