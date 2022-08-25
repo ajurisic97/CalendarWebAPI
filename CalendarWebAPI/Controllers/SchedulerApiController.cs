@@ -18,7 +18,7 @@ namespace CalendarWebAPI.Controllers
         }
 
 
-        //Ostavljam zakomentirano za potrebe testiranja
+        //Ostavljam zakomentirano za potrebe eventualnog kasnijeg testiranja/koristenja
         //[HttpGet]
         //public ActionResult<List<FullSchedulerItem>> GetAll()
         //{
@@ -41,19 +41,7 @@ namespace CalendarWebAPI.Controllers
         {
             var schedulerInfo = SchedulerDto.FromJson(json);
             return _schedulerService.AddSchedulerItem(schedulerInfo.SchedulerId,schedulerInfo.SchedulerItem.Date,schedulerInfo.SchedulerItem);
-            /*
-             * RAD NOĆU ZA Dan(Date) Od (StartTime) Do(EndTime). SchedulerId(tu ce kasnije ici nesto za uvjet where eventType=="rad noću" and person=="xy")
-             {
-  "SchedulerId":"C8297B83-6CAC-4C1C-B972-5FCDF998E82C",
-"StartTime":"08:00:00",
-"EndTime":"11:00:00",
-"Date":"2022-08-26"
-}
-              }
-             * 
-             * 
-             * 
-             * */
+            
         }
 
     }
