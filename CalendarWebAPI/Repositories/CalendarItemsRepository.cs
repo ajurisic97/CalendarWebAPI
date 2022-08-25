@@ -18,23 +18,19 @@ namespace CalendarWebAPI.Repositories
         {
 
             currentDepth++;
-            bool Filtered = true;
-            if (dt == null && dt2 == null)
-            {
-                Filtered = false;
-            }
+            bool firstExists = !(dt == DateTime.MinValue);
+            bool secondExists = !(dt2 == DateTime.MinValue);
             Expression<Func<Calendar, FullCalendarDto>> result = calendar => new FullCalendarDto()
             {
                 CalendarId = calendar.Id,
                 Description = calendar.Description,
                 StartDate = calendar.StartDate,
                 EndDate = calendar.EndDate,
-                CalendarItems = !Filtered
+                CalendarItems = (!firstExists && !secondExists)
                 ? _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id).OrderBy(x => x.Date).Select(x => CalendarItemsMapper.FromDbCalendarItems(x)).ToList()
-                : dt ==null ? _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id && x.Date.Value <= dt2).OrderBy(x => x.Date).Select(x => CalendarItemsMapper.FromDbCalendarItems(x)).ToList()
-                : dt2 == null ? _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id && x.Date.Value >= dt).OrderBy(x => x.Date).Select(x => CalendarItemsMapper.FromDbCalendarItems(x)).ToList()
-                : _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id && x.Date.Value >= dt && x.Date.Value <= dt2).OrderBy(x => x.Date).Select(x => CalendarItemsMapper.FromDbCalendarItems(x)).ToList(),
-                
+                : (secondExists && firstExists) ? _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id && x.Date.Value >= dt && x.Date.Value <= dt2).OrderBy(x => x.Date).Select(x => CalendarItemsMapper.FromDbCalendarItems(x)).ToList()
+                : secondExists ? _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id && x.Date.Value <= dt2).OrderBy(x => x.Date).Select(x => CalendarItemsMapper.FromDbCalendarItems(x)).ToList()
+                :  _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id && x.Date.Value >= dt).OrderBy(x => x.Date).Select(x => CalendarItemsMapper.FromDbCalendarItems(x)).ToList(),
                 SubCalendars = currentDepth == maxDepth
                 ? new List<FullCalendarDto>()
                 : calendar.InversePaent.AsQueryable().Select(GetCalendarProjection(dt, dt2, maxDepth, currentDepth)).ToList(),
