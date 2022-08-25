@@ -11,9 +11,20 @@ namespace CalendarWebAPI.Services
             _schedulerRepository = schedulerRepository;
         }
 
-        public IEnumerable<Scheduler> GetAll()
+        public IEnumerable<FullSchedulerItem> GetAll()
         {
-            return _schedulerRepository.GetSchedulers();
+            return _schedulerRepository.GetFull();
         }
+
+        public IEnumerable<FullSchedulerItem> GetByPerson(Guid id)
+        {
+            return _schedulerRepository.GetByPersonId(id);
+        }
+        public IEnumerable<FullSchedulerItem> GetByDates(Guid id,DateTime dt, DateTime dt2)
+        {
+            return _schedulerRepository.GetByPersonAndDate(id,dt,dt2);
+        }
+
+
     }
 }

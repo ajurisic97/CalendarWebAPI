@@ -16,9 +16,23 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Scheduler>> GetAll()
+        public ActionResult<List<FullSchedulerItem>> GetAll()
         {
             return _schedulerService.GetAll().ToList();
         }
+        [HttpGet("person_id")]
+        public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id)
+        {
+            return _schedulerService.GetByPerson(person_id).ToList();
+        }
+
+        [HttpGet("person_id,startdate,enddate")]
+        public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id,DateTime startDate, DateTime endDate)
+        {
+            return _schedulerService.GetByDates(person_id,startDate,endDate).ToList();
+        }
+
+
+
     }
 }

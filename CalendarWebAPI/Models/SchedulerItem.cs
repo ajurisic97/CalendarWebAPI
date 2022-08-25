@@ -3,18 +3,19 @@
     public class SchedulerItem
     {
         public Guid Id { get; set; }
-        public Scheduler Scheduler { get; set; }
-        public CalendarItem CalendarItem { get; set; }
-        public TimeOnly? StartTime { get; set; }
-        public TimeOnly? EndTime { get; set; }
+        //public CalendarItem CalendarItem { get; set; }
 
-        public SchedulerItem(Guid id, Scheduler scheduler, CalendarItem calendarItem, TimeOnly? startTime, TimeOnly? endTime)
+        public DateTime Date { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
+
+        public SchedulerItem(Guid id, TimeSpan? startTime, TimeSpan? endTime, DateTime date)
         {
             Id = id;
-            Scheduler = scheduler;
-            CalendarItem = calendarItem;
+            //CalendarItem = calendarItem;
             StartTime = startTime;
             EndTime = endTime;
+            Date = date;
         }
     }
 }
