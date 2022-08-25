@@ -30,6 +30,10 @@ namespace CalendarWebAPI.Services
             return _schedulerRepository.AddSchedulerItem(SchedulerId, dt, schedulerItem);
         }
 
+        public void Edit(Guid schedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
+        {
+            _schedulerRepository.EditSchedulerItem(schedulerId,dt, schedulerItem);
+        }
 
     }
 }

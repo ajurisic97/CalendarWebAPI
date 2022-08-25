@@ -58,6 +58,15 @@ namespace CalendarWebAPI.Repositories
 
         }
 
+        public void EditSchedulerItem(Guid schedulerId,DateTime dt,Models.SchedulerItem schedulerItem)
+        {
+            var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == dt).FirstOrDefault();
+            schedulerItem.Date = dt;
+            var dbSchedulerItem = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
+            _calendarContext.SchedulerItems.Update(dbSchedulerItem);
+            _calendarContext.SaveChanges();
+        }
+
 
     }
 }
