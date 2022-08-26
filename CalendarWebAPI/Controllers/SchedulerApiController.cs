@@ -31,25 +31,31 @@ namespace CalendarWebAPI.Controllers
         //}
 
         [HttpGet("person_id,startdate,enddate")]
-        public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id,DateTime startDate, DateTime endDate)
+        public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id, DateTime startDate, DateTime endDate)
         {
-            return _schedulerService.GetByDates(person_id,startDate,endDate).ToList();
+            return _schedulerService.GetByDates(person_id, startDate, endDate).ToList();
         }
 
         [HttpPost]
         public ActionResult<SchedulerItem> AddSchedulerItem([FromBody] JObject json)
         {
             var schedulerInfo = SchedulerDto.FromJson(json);
-            return _schedulerService.AddSchedulerItem(schedulerInfo.SchedulerId,schedulerInfo.SchedulerItem.Date,schedulerInfo.SchedulerItem);
-            
+            return _schedulerService.AddSchedulerItem(schedulerInfo.SchedulerId, schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
+
         }
 
-        [HttpPut]
-        public void Edit([FromBody] JObject json)
+        [HttpPut("id")]
+        public void Edit(Guid id,[FromBody] JObject json)
         {
             var schedulerInfo = SchedulerDto.FromJson(json);
-            _schedulerService.Edit(schedulerInfo.SchedulerId,schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
+            schedulerInfo.SchedulerId = id;
+            _schedulerService.Edit(schedulerInfo.SchedulerId, schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
         }
 
+        [HttpDelete("id")]
+        public void Delete(Guid id)
+        {
+            _schedulerService.Delete(id);
+        }
     }
 }

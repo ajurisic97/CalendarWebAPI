@@ -67,6 +67,13 @@ namespace CalendarWebAPI.Repositories
             _calendarContext.SaveChanges();
         }
 
+        public void DeleteSchedulerItem(Guid id)
+        {
+            var schedulerItem = _calendarContext.SchedulerItems.FirstOrDefault(x=>x.Id == id);
+            _calendarContext.Remove(schedulerItem);
+            _calendarContext.SaveChanges();
+        }
+
 
     }
 }

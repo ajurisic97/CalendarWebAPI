@@ -35,5 +35,10 @@ namespace CalendarWebAPI.Services
             _schedulerRepository.EditSchedulerItem(schedulerId,dt, schedulerItem);
         }
 
+        public void Delete(Guid id)
+        {
+            _schedulerRepository.DeleteSchedulerItem(id);
+        }
+
     }
 }

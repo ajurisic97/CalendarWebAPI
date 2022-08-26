@@ -33,5 +33,14 @@ namespace CalendarWebAPI.Services
         {
             _calendarItemsRepository.Edit(calendar);
         }
+
+        public void EditCalendarItem(CalendarItem calendarItem)
+        {
+            _calendarItemsRepository.EditCalendarItem(calendarItem);
+        }
+        public CalendarItem AddCalendarItem(Guid calendarId,CalendarItem calendarItem)
+        {
+            return _calendarItemsRepository.AddCalendarItem(calendarId,calendarItem);
+        }
     }
 }

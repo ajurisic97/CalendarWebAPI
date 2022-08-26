@@ -7,7 +7,7 @@ namespace CalendarWebAPI.Dtos
     {
         public static SchedulerInfo FromJson(JObject json)
         {
-            var Id = json["Id"].ToObject<Guid>();
+            var Id = new Guid();
             var schedulerId = json["SchedulerId"].ToObject<Guid>();
             var startTime = json["StartTime"].ToObject<TimeSpan>();
             var endTime = json["EndTime"].ToObject<TimeSpan>();

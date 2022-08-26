@@ -140,6 +140,32 @@ namespace CalendarWebAPI.Repositories
 
         }
 
+        public void EditCalendarItem(Models.CalendarItem calendarItem)
+        {
+            var dbCIItem = CalendarItemsMapper.ToDatabase(calendarItem);
+            _dbContext.Update(dbCIItem);
+            _dbContext.SaveChanges();
 
+        }
+
+        public Models.CalendarItem AddCalendarItem(Guid calendarId,Models.CalendarItem calendarItem)
+        {
+            
+            var dbCalendarItem = CalendarItemsMapper.ToDatabase(calendarItem);
+            dbCalendarItem.CalendarId = calendarId;
+            _dbContext.CalendarItems.Add(dbCalendarItem);
+            _dbContext.SaveChanges();
+            var result = _dbContext.CalendarItems.SingleOrDefault(X=>X.Date== calendarItem.Date && X.GivenName==calendarItem.GivenName);
+            return CalendarItemsMapper.FromDbCalendarItems(result);
+        }
+
+        public void DeleteCalendarItem(Guid id)
+        {
+            var calendarItem = _dbContext.CalendarItems.Where(x => x.Id == id).FirstOrDefault();
+            var schedulerItems = _dbContext.SchedulerItems.Where(x => x.CalendarItemsId==id).ToList();
+            _dbContext.RemoveRange(schedulerItems);
+            _dbContext.CalendarItems.Remove(calendarItem);
+            _dbContext.SaveChanges();
+        }
     }
 }

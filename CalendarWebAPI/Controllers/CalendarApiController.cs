@@ -46,5 +46,19 @@ namespace CalendarWebAPI.Controllers
             _calendarItemsService.Edit(calendar);
         }
 
+        //[HttpPut]
+        //public void EditCalendarItem([FromBody] JObject json)
+        //{
+        //    var calendar = CalendarItemsDto.FromJson(json);
+        //    _calendarItemsService.EditCalendarItem(calendar);
+        //}
+
+
+        [HttpPost("{calendarId}")]
+        public ActionResult<CalendarItem> AddCalendarItem(Guid calendarId,[FromBody]JObject json)
+        {
+            var dbCalendarItem = CalendarItemsDto.FromJson(json);
+            return _calendarItemsService.AddCalendarItem(calendarId,dbCalendarItem);
+        }
     }
 }
