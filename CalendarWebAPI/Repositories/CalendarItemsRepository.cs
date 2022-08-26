@@ -87,9 +87,15 @@ namespace CalendarWebAPI.Repositories
         {
             var items = FillCalendarItems(calendar);
             calendar.CreatedDate = DateTime.Now;
-            var dbCalendar = CalendarMapper.ToDatabase(calendar);
-            _dbContext.Calendars.Add(dbCalendar);
-            _dbContext.CalendarItems.AddRange(items);
+            var alreadyExists = _dbContext.Calendars.Where(x => x.Description == calendar.Description).FirstOrDefault();
+            if (alreadyExists==null)
+            {
+                var dbCalendar = CalendarMapper.ToDatabase(calendar);
+                _dbContext.Calendars.Add(dbCalendar);
+            }
+            var datesExisting = _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id).Select(x=>x.Date).ToList();
+            var filtered = items.Where(x => !datesExisting.Contains(x.Date));
+            _dbContext.CalendarItems.AddRange(filtered);
             _dbContext.SaveChanges();
             return calendar;
 
