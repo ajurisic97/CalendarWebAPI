@@ -70,7 +70,7 @@ namespace CalendarWebAPI.Repositories
                 {
                     weekend = true;
                 }
-                var holiday = holidays.Any(x => (x.DateDay).Equals(currentDay) && x.DateMonth.Equals(tempDate.Month.ToString()));
+                var holiday = holidays.Any(x => (x.DateDay).Equals(tempDate.Day.ToString()) && x.DateMonth.Equals(tempDate.Month.ToString()));
                 if (holiday)
                 {
                     workingDay = false;
@@ -111,6 +111,8 @@ namespace CalendarWebAPI.Repositories
             foreach (var child in children)
             {
                 var nove = _dbContext.CalendarItems.AsNoTracking().Where(cal => cal.CalendarId == child.Id).ToList();
+                var schedulerItems = _dbContext.SchedulerItems.AsNoTracking().Where(x=>nove.Contains(x.CalendarItems)).ToList();
+                _dbContext.SchedulerItems.RemoveRange(schedulerItems);
                 _dbContext.CalendarItems.RemoveRange(nove);
                 _dbContext.SaveChanges();
                 Delete(child.Id);
@@ -129,6 +131,7 @@ namespace CalendarWebAPI.Repositories
             var x = _dbContext.Calendars.AsNoTracking().FirstOrDefault(cal => cal.Id == dbCalendar.Id);
             dbCalendar.RowVersion = x.RowVersion;
             var calendarItems = _dbContext.CalendarItems.Where(cal => cal.CalendarId == calendar.Id);
+
             _dbContext.CalendarItems.RemoveRange(calendarItems);
             var items = FillCalendarItems(calendar);
             _dbContext.CalendarItems.AddRange(items);

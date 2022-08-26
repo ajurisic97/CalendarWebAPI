@@ -18,7 +18,7 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpGet("dt1,dt2,depth")]
-        public ActionResult<List<FullCalendarDto>> GetAll(DateTime? dt1, DateTime? dt2,int depth=7)
+        public ActionResult<List<FullCalendarDto>> GetAll(DateTime dt1, DateTime dt2,int depth=7)
         {
 
             var objectResult = _calendarItemsService.GetAll(dt1, dt2,depth).ToList();

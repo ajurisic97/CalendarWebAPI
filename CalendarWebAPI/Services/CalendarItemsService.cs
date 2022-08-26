@@ -14,7 +14,7 @@ namespace CalendarWebAPI.Services
             _calendarItemsRepository = cir;
         }
 
-        public IEnumerable<FullCalendarDto> GetAll(DateTime? dt, DateTime? dt2,int depth=7)
+        public IEnumerable<FullCalendarDto> GetAll(DateTime dt, DateTime dt2,int depth=7)
         {
             return _calendarItemsRepository.GetCalendarsWithSubCalendars(dt,dt2,depth);
         }
