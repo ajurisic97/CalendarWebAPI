@@ -76,6 +76,26 @@ namespace CalendarWebAPI.Repositories
 
         }
 
+        public void AddRecurringItems(Guid schedulerId,DateTime dt,Models.SchedulerItem schedulerItem, string typeOfRecurring,DateTime? EndDate)
+        {
+            var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == dt).FirstOrDefault();
+            var occ = _calendarContext.Recurrings.Where(x => x.ReccuringType == typeOfRecurring).Select(x => x.NumOfOccurrences).FirstOrDefault();
+            var currentDate = dt;
+            List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
+            var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
+            schedulerItems.Add(dbScheduler);
+            while ( currentDate.AddDays(occ.Value) < EndDate)
+            {
+
+                currentDate = currentDate.AddDays(occ.Value);
+                calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == currentDate).FirstOrDefault();
+                dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
+                schedulerItems.Add(dbScheduler);
+            }
+            _calendarContext.SchedulerItems.AddRange(schedulerItems);
+            _calendarContext.SaveChanges();
+
+        }
         public void EditSchedulerItem(Guid schedulerId,DateTime dt,Models.SchedulerItem schedulerItem)
         {
             var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == dt).FirstOrDefault();

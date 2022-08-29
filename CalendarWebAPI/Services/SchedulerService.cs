@@ -29,7 +29,11 @@ namespace CalendarWebAPI.Services
         {
             return _schedulerRepository.AddSchedulerItem(SchedulerId, dt, schedulerItem);
         }
-
+        
+        public void AddRecurringSchedulerItems(Guid SchedulerId, DateTime dt, Models.SchedulerItem schedulerItem, string occ, DateTime? endDate)
+        {
+            _schedulerRepository.AddRecurringItems(SchedulerId, dt, schedulerItem,occ, endDate);
+        }
         public void Edit(Guid schedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
         {
             _schedulerRepository.EditSchedulerItem(schedulerId,dt, schedulerItem);

@@ -44,6 +44,14 @@ namespace CalendarWebAPI.Controllers
 
         }
 
+        [HttpPost("reapeatnumber,enddate")]
+        public ActionResult<SchedulerItem> AddSchedulerItemRecurring(string repeat, DateTime? endDate,[FromBody] JObject json)
+        {
+            var schedulerInfo = SchedulerDto.FromJson(json);
+            _schedulerService.AddRecurringSchedulerItems(schedulerInfo.SchedulerId, schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem,repeat,endDate);
+            return null;
+        }
+
         [HttpPut("id")]
         public void Edit(Guid id,[FromBody] JObject json)
         {
