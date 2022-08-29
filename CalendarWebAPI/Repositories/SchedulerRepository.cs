@@ -45,13 +45,31 @@ namespace CalendarWebAPI.Repositories
         public IEnumerable<Models.FullSchedulerItem> GetByPersonAndDate(Guid id,DateTime dt, DateTime dt2)
         {
             var result = _calendarContext.Schedulers.Where(x => x.PersonId == id).Select(GetSchedulerProjection(dt,dt2)).ToList();
-            return result;
+            List<Models.FullSchedulerItem> fsi = new List<Models.FullSchedulerItem>();
+            //Grouping by name of event:
+            foreach(var item in result)
+            {
+                var alreadyExists = fsi.Any(x => x.Name.Equals(item.Name));
+                if (alreadyExists)
+                {
+                    fsi.Where(x => x.Name.Equals(item.Name)).First().SchedulersItems.AddRange(item.SchedulersItems);
+                }
+                else
+                {
+                    fsi.Add(item);
+                }
+            }
+            //ako ne trebaju prazni nadodati: .Where(x=>x.SchedulersItems.Any())
+            //eventualno filtracija i po imenu eventa .Where(x=>x.Name=="filteredName")
+            //var test = result.Select(x=> new{ x.Name, x.Coef, x.SchedulersItems}).GroupBy(x => new { x.Name, x.Coef }).ToList();
+            return fsi;
         }
 
         public Models.SchedulerItem AddSchedulerItem(Guid schedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
         {
             var calendarItem = _calendarContext.CalendarItems.Where(x=>x.Date == dt).FirstOrDefault();
             var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId,calendarItem.Id,schedulerItem);
+            
             _calendarContext.SchedulerItems.Add(dbScheduler);
             _calendarContext.SaveChanges();
             return schedulerItem;

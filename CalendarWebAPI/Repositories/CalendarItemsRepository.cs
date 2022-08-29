@@ -55,17 +55,14 @@ namespace CalendarWebAPI.Repositories
             var rangeDates = (end - start).Days;
             Models.CalendarItem item;
             var holidays = _dbContext.Holidays.Select(x => new { x.DateDay, x.DateMonth });
-            var WeekDays = _dbContext.WorkingDays.Select(x => new Models.WorkingDays( x.Monday, x.Tuseday, x.Wednesday, x.Thursday, x.Friday, x.Sathurday, x.Sunday)).FirstOrDefault();
+            var WeekDays = _dbContext.WorkingDays.Select(x=> new {x.Name, x.IsWorkingDay});
             var dict = new Dictionary<string, bool>();
-            dict.Add("Monday", WeekDays.Monday); dict.Add("Tuesday", WeekDays.Tuesday); dict.Add("Wednesday", WeekDays.Wednesday); dict.Add("Thursday", WeekDays.Thursday); 
-            dict.Add("Friday", WeekDays.Friday); dict.Add("Saturday", WeekDays.Saturday); dict.Add("Sunday", WeekDays.Sunday);
-
-            var workingDay = true;
+            
             var weekend = false;
             for (int i = 0; i <= rangeDates; i++)
             {
                 var currentDay = tempDate.ToString("dddd");
-                workingDay = dict[currentDay];
+                var workingDay = WeekDays.Where(x => x.Name == currentDay).Select(x=>x.IsWorkingDay).FirstOrDefault();
                 if(currentDay.Equals("Sunday") || currentDay.Equals("Saturday"))
                 {
                     weekend = true;
