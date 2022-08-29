@@ -14,7 +14,7 @@ namespace CalendarWebAPI.DbModels
         public int? TheDayOfYear { get; set; }
         public int IsWeekend { get; set; }
         public int? TheWeek { get; set; }
-        public int? TheISOweek { get; set; }
+        public int? TheIsoweek { get; set; }
         public DateTime? TheFirstOfWeek { get; set; }
         public DateTime? TheLastOfWeek { get; set; }
         public byte? TheWeekOfMonth { get; set; }
@@ -28,13 +28,13 @@ namespace CalendarWebAPI.DbModels
         public DateTime? TheFirstOfQuarter { get; set; }
         public DateTime? TheLastOfQuarter { get; set; }
         public int? TheYear { get; set; }
-        public int? TheISOYear { get; set; }
+        public int? TheIsoyear { get; set; }
         public DateTime? TheFirstOfYear { get; set; }
         public DateTime? TheLastOfYear { get; set; }
         public bool? IsLeapYear { get; set; }
         public int Has53Weeks { get; set; }
-        public int Has53ISOWeeks { get; set; }
-        public string? MMYYYY { get; set; }
+        public int Has53Isoweeks { get; set; }
+        public string? Mmyyyy { get; set; }
         public string? Style101 { get; set; }
         public string? Style103 { get; set; }
         public string? Style112 { get; set; }

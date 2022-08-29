@@ -82,9 +82,12 @@ namespace CalendarWebAPI.DbModels
 
                 entity.ToTable("CalendarDate", "Catalog");
 
-                entity.Property(e => e.MMYYYY)
+                entity.Property(e => e.Has53Isoweeks).HasColumnName("Has53ISOWeeks");
+
+                entity.Property(e => e.Mmyyyy)
                     .HasMaxLength(6)
                     .IsUnicode(false)
+                    .HasColumnName("MMYYYY")
                     .IsFixedLength();
 
                 entity.Property(e => e.Style101)
@@ -125,6 +128,10 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.TheFirstOfWeek).HasColumnType("date");
 
                 entity.Property(e => e.TheFirstOfYear).HasColumnType("date");
+
+                entity.Property(e => e.TheIsoweek).HasColumnName("TheISOweek");
+
+                entity.Property(e => e.TheIsoyear).HasColumnName("TheISOYear");
 
                 entity.Property(e => e.TheLastOfMonth).HasColumnType("date");
 
@@ -432,25 +439,11 @@ namespace CalendarWebAPI.DbModels
 
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-                entity.Property(e => e.Friday)
+                entity.Property(e => e.IsWorkingDay)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.Monday)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Thursday)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Tuseday)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Wednesday)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
+                entity.Property(e => e.Name).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);
