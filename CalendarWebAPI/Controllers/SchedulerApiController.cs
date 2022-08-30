@@ -24,35 +24,35 @@ namespace CalendarWebAPI.Controllers
         //{
         //    return _schedulerService.GetAll().ToList();
         //}
-        [HttpGet("person_id")]
-        public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id)
-        {
+        //[HttpGet("person_id")]
+        //public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id)
+        //{
             
-            return _schedulerService.GetByPerson(person_id).ToList();
-        }
+        //    return _schedulerService.GetByPerson(person_id).ToList();
+        //}
 
-        [HttpGet("person_id,startdate,enddate")]
+        [HttpGet]
         public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id, DateTime startDate, DateTime endDate)
         {
             return _schedulerService.GetByDates(person_id, startDate, endDate).ToList();
         }
 
-        [HttpPost]
-        public ActionResult<SchedulerItem> AddSchedulerItem([FromBody] JObject json)
-        {
-            var schedulerInfo = SchedulerDto.FromJson(json);
-            _schedulerService.AddRecurringSchedulerItems(schedulerInfo.SchedulerId, schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem,null,null);
-            return schedulerInfo.SchedulerItem;
-        }
+        //[HttpPost]
+        //public ActionResult<SchedulerItem> AddSchedulerItem([FromBody] JObject json)
+        //{
+        //    var schedulerInfo = SchedulerDto.FromJson(json);
+        //    _schedulerService.AddRecurringSchedulerItems(schedulerInfo.SchedulerId, schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem,null,null);
+        //    return schedulerInfo.SchedulerItem;
+        //}
 
         //period is "daily, weekly, monthly, yearly", endDate -> when does that recurring stop. If we don't write reccuring type and endDate we just post 1 
         // schedulerItem for date we wanted
-        [HttpPost("period,enddate")]
-        public ActionResult<SchedulerItem> AddSchedulerItemRecurring(string? recurringType, DateTime? endDate,[FromBody] JObject json)
+        [HttpPost]
+        public ActionResult<SchedulerItem> AddSchedulerItemRecurring(Guid person_id, int eventType, string? recurringType, DateTime? endDate,[FromBody] JObject json)
         {
-            var schedulerInfo = SchedulerDto.FromJson(json);
-            _schedulerService.AddRecurringSchedulerItems(schedulerInfo.SchedulerId, schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem,recurringType,endDate);
-            return schedulerInfo.SchedulerItem;
+            var schedulerItem = SchedulerDto.SIFromJson(json);
+            _schedulerService.AddRecurringSchedulerItems(person_id,eventType,schedulerItem,recurringType,endDate);
+            return schedulerItem;
         }
 
         [HttpPut("id")]

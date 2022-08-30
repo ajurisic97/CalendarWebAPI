@@ -17,5 +17,14 @@ namespace CalendarWebAPI.Dtos
 
 
         }
+
+        public static SchedulerItem SIFromJson(JObject json)
+        {
+            var startTime = json["StartTime"].ToObject<TimeSpan>();
+            var endTime = json["EndTime"].ToObject<TimeSpan>();
+            var date = json["Date"].ToObject<DateTime>();
+            var schedulerItem = new SchedulerItem(null, startTime, endTime, date);
+            return schedulerItem;
+        }
     }
 }
