@@ -56,10 +56,9 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpPut("id")]
-        public void Edit(Guid id,[FromBody] JObject json)
+        public void Edit([FromBody] JObject json)
         {
             var schedulerInfo = SchedulerDto.FromJson(json);
-            schedulerInfo.SchedulerId = id;
             _schedulerService.Edit(schedulerInfo.SchedulerId, schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
         }
 

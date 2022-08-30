@@ -13,7 +13,7 @@ namespace CalendarWebAPI.Mappers
         {
             return new DbModels.SchedulerItem
             {
-                Id = new Guid(),
+                Id = si.Id == null ? new Guid() : si.Id.Value,
                 StartTime = si.StartTime,
                 EndTime = si.EndTime,
                 SchedulerId = schedulerId,

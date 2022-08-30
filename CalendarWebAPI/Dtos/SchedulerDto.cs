@@ -5,9 +5,10 @@ namespace CalendarWebAPI.Dtos
 {
     public class SchedulerDto
     {
+        //PUT
         public static SchedulerInfo FromJson(JObject json)
         {
-            var Id = new Guid();
+            var Id = json["Id"].ToObject<Guid>();
             var schedulerId = json["SchedulerId"].ToObject<Guid>();
             var startTime = json["StartTime"].ToObject<TimeSpan>();
             var endTime = json["EndTime"].ToObject<TimeSpan>();
@@ -18,6 +19,7 @@ namespace CalendarWebAPI.Dtos
 
         }
 
+        //POST
         public static SchedulerItem SIFromJson(JObject json)
         {
             var startTime = json["StartTime"].ToObject<TimeSpan>();
