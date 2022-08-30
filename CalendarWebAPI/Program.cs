@@ -2,6 +2,7 @@ using CalendarWebAPI.DbModels;
 using CalendarWebAPI.Repositories;
 using CalendarWebAPI.Services;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,10 @@ builder.Services.AddScoped<SchedulerService>();
 
 
 builder.Services.AddControllers().AddNewtonsoftJson();
-
+builder.Services.AddControllers().AddNewtonsoftJson(o =>
+{
+    o.SerializerSettings.Converters.Add(new StringEnumConverter());
+});
 builder.Services.AddDbContext<CalendarContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));

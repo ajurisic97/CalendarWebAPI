@@ -46,7 +46,7 @@ namespace CalendarWebAPI.Repositories
         {
             var result = _calendarContext.Schedulers.Where(x => x.PersonId == id).Select(GetSchedulerProjection(dt,dt2)).ToList();
             List<Models.FullSchedulerItem> fsi = new List<Models.FullSchedulerItem>();
-            //Grouping by name of event:
+            //Grouping by name of event (because of recurring types we have same event with diff recurring types):
             foreach(var item in result)
             {
                 var alreadyExists = fsi.Any(x => x.Name.Equals(item.Name));
@@ -61,7 +61,6 @@ namespace CalendarWebAPI.Repositories
             }
             //ako ne trebaju prazni nadodati: .Where(x=>x.SchedulersItems.Any())
             //eventualno filtracija i po imenu eventa .Where(x=>x.Name=="filteredName")
-            //var test = result.Select(x=> new{ x.Name, x.Coef, x.SchedulersItems}).GroupBy(x => new { x.Name, x.Coef }).ToList();
             return fsi;
         }
 
@@ -76,7 +75,7 @@ namespace CalendarWebAPI.Repositories
 
         }
 
-        public void AddRecurringItems(Guid schedulerId,DateTime dt,Models.SchedulerItem schedulerItem, string typeOfRecurring,DateTime? EndDate)
+        public void AddRecurringItems(Guid schedulerId,DateTime dt,Models.SchedulerItem schedulerItem, string? typeOfRecurring,DateTime? EndDate)
         {
             var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == dt).FirstOrDefault();
             var occ = _calendarContext.Recurrings.Where(x => x.ReccuringType == typeOfRecurring).Select(x => x.NumOfOccurrences).FirstOrDefault();
@@ -84,14 +83,18 @@ namespace CalendarWebAPI.Repositories
             List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
             var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
             schedulerItems.Add(dbScheduler);
-            while ( currentDate.AddDays(occ.Value) < EndDate)
+            if(occ!= null)
             {
+                while (currentDate.AddDays(occ.Value) < EndDate)
+                {
 
-                currentDate = currentDate.AddDays(occ.Value);
-                calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == currentDate).FirstOrDefault();
-                dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
-                schedulerItems.Add(dbScheduler);
+                    currentDate = currentDate.AddDays(occ.Value);
+                    calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == currentDate).FirstOrDefault();
+                    dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
+                    schedulerItems.Add(dbScheduler);
+                }
             }
+            
             _calendarContext.SchedulerItems.AddRange(schedulerItems);
             _calendarContext.SaveChanges();
 
