@@ -1,0 +1,24 @@
+[
+  {
+    "Id": null,
+    "Name": "Regular",
+    "Type": 1,
+    "Coefficient": 1.0,
+    "RecurringId": null
+  },
+  {
+    "Id": null,
+    "Name": "Vacation",
+    "Type": 10,
+    "Coefficient": 1.0,
+    "RecurringId": null
+  },
+  {
+    "Id": null,
+    "Name": "SickDay",
+    "Type": 11,
+    "Coefficient": 0.7,
+    "RecurringId": null
+  }
+
+]

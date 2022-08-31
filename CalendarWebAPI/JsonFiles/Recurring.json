@@ -1,0 +1,21 @@
+[
+  { //treba izmjeniti u "RecurringType", nadodati DayOfMonth, MonthOfYear naknadno
+    "Id": null,
+    "RecucringType": "None",
+    "Separation": 0,
+    "NumOfOccurrences": 0
+  },
+  {
+    "Id": null,
+    "RecucringType": "Daily",
+    "Separation": 0,
+    "NumOfOccurrences": 1
+  },
+  {
+    "Id": null,
+    "RecucringType": "Weekly",
+    "Separation": 0,
+    "NumOfOccurrences": 7
+  }//kad se nadoda DayOfMonth i MonthOfYear nadodati "Monthly" i "Yearly"
+
+]
