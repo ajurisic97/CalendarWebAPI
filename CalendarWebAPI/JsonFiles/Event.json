@@ -1,20 +1,20 @@
 [
   {
-    "Id": null,
+    "Id": "4c70a0b8-14fb-4a34-8e72-f1f54f2234c1",
     "Name": "Regular",
     "Type": 1,
     "Coefficient": 1.0,
     "RecurringId": null
   },
   {
-    "Id": null,
+    "Id": "e946e815-028f-4dbd-b276-393a352bcf4a",
     "Name": "Vacation",
     "Type": 10,
     "Coefficient": 1.0,
     "RecurringId": null
   },
   {
-    "Id": null,
+    "Id": "4bd7a4dc-e723-47d2-a659-b84708b7c8e8",
     "Name": "SickDay",
     "Type": 11,
     "Coefficient": 0.7,

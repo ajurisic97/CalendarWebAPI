@@ -1,9 +1,16 @@
 //RAD NOĆU ZA Dan(Date) Od (StartTime) Do(EndTime). SchedulerId(tu ce kasnije ici nesto za uvjet where eventType=="rad noću" and person=="xy")
-{
-  "Id": "C46B6DC2-A64B-4F3E-8B11-00ED615DD74C",
-  "SchedulerId": "C8297B83-6CAC-4C1C-B972-5FCDF998E82C",
-  "StartTime": "08:00:00",
-  "EndTime": "11:00:00",
-  "Date": "2022-08-26"
-}
-              
+[
+  
+  {
+    "Id": "C46B6DC2-A64B-4F3E-8B11-00ED615DD74C",
+    "SchedulerId": "C8297B83-6CAC-4C1C-B972-5FCDF998E82C",
+    "StartTime": "08:00:00",
+    "EndTime": "11:00:00",
+    "Date": "2022-08-26"
+  },
+  {
+    "StartTime": "08:00:00",
+    "EndTime": "11:00:00",
+    "Date": "2022-08-26"
+  }
+]

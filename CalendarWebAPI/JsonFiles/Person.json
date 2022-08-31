@@ -1,16 +1,20 @@
-{
-  "Code": "",
-  "FirstName": "Andelo",
-  "LastName": "Jurisic",
-  "Adress": "M. i C. 78",
-  "PostalCode": "22000",
-  "City": "Šibenik",
-  "Country": "Republika Hrvatska",
-  "CountryOfResidence": "Republika Hrvatska",
-  "DateOfBirth": null,
-  "Gender": "M",
-  "PersonalIdentificationNumber": "01234567890",
-  "RecordDtModified": null,
-  "ImageUrl": null,
-  "Description": "Sample Data"
-}
+[
+  {
+    "Id": "5c813ac0-e2ec-431a-b9d6-468c56bb2ab2",
+    "Code": "",
+    "FirstName": "Andelo",
+    "LastName": "Jurisic",
+    "Adress": "M. i C. 78",
+    "PostalCode": "22000",
+    "City": "Šibenik",
+    "Country": "Republika Hrvatska",
+    "CountryOfResidence": "Republika Hrvatska",
+    "DateOfBirth": null,
+    "Gender": "M",
+    "PersonalIdentificationNumber": "01234567890",
+    "RecordDtModified": null,
+    "RowVersion": null,
+    "ImageUrl": null,
+    "Description": "Sample Data"
+  }
+]

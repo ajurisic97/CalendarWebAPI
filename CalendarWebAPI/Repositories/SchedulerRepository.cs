@@ -96,12 +96,12 @@ namespace CalendarWebAPI.Repositories
             schedulerItems.Add(dbScheduler);
             if(occ!= null)
             {
-                while (currentDate.AddDays(occ.Value) < EndDate)
+                while (currentDate.AddDays(occ.Value) <= EndDate)
                 {
 
                     currentDate = currentDate.AddDays(occ.Value);
                     //calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == currentDate).FirstOrDefault();
-                    calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
+                    calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(currentDate, currentDate).FirstOrDefault();
                     //da ne dodajemo za neradne dane i praznike provjeravamo prvo je li taj dan working day. Inače nema smisla dodavati event
                     if ((bool)calendarItem.IsWorkingday)
                     {

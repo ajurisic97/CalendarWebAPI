@@ -1,21 +1,21 @@
 [
-  { //treba izmjeniti u "RecurringType", nadodati DayOfMonth, MonthOfYear naknadno
-    "Id": null,
-    "RecucringType": "None",
+  {
+    "Id": "ded8301e-72f1-4006-9321-ab1097af3e15",
+    "ReccuringType": "None",
     "Separation": 0,
     "NumOfOccurrences": 0
   },
   {
-    "Id": null,
-    "RecucringType": "Daily",
+    "Id": "d1ecf616-0aee-410b-81fb-5a8a23517484",
+    "ReccuringType": "Daily",
     "Separation": 0,
     "NumOfOccurrences": 1
   },
   {
-    "Id": null,
-    "RecucringType": "Weekly",
+    "Id": "4402e7a2-aeb8-4202-9d3a-4fc5c804967c",
+    "ReccuringType": "Weekly",
     "Separation": 0,
     "NumOfOccurrences": 7
-  }//kad se nadoda DayOfMonth i MonthOfYear nadodati "Monthly" i "Yearly"
+  }
 
 ]
