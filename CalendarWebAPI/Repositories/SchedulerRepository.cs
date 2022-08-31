@@ -8,9 +8,11 @@ namespace CalendarWebAPI.Repositories
     public class SchedulerRepository
     {
         private readonly CalendarContext _calendarContext;
-        public SchedulerRepository(CalendarContext calendarContext)
+        private readonly CalendarItemsRepository _calendarItemsRepository;
+        public SchedulerRepository(CalendarContext calendarContext, CalendarItemsRepository calendarItemsRepository)
         {
             _calendarContext = calendarContext;
+            _calendarItemsRepository = calendarItemsRepository;
         }
 
         public Expression<Func<Scheduler, Models.FullSchedulerItem>> GetSchedulerProjection(DateTime? dt1, DateTime? dt2)
@@ -66,8 +68,8 @@ namespace CalendarWebAPI.Repositories
         
         public Models.SchedulerItem AddSchedulerItem(Guid schedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
         {
-            var calendarItem = _calendarContext.CalendarItems.Where(x=>x.Date == dt).FirstOrDefault();
-            var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId,calendarItem.Id,schedulerItem);
+            var calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
+            var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId,(Guid)calendarItem.Id,schedulerItem);
             
             _calendarContext.SchedulerItems.Add(dbScheduler);
             _calendarContext.SaveChanges();
@@ -78,7 +80,8 @@ namespace CalendarWebAPI.Repositories
         public void AddRecurringItems(Guid personId,int eventType,Models.SchedulerItem schedulerItem, string? typeOfRecurring,DateTime? EndDate)
         {
             var dt = schedulerItem.Date;
-            var calendarItem = _calendarContext.CalendarItems.Where(ci => ci.Date == dt).FirstOrDefault();
+            var calendarItem=_calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
+            //var calendarItem = _calendarContext.CalendarItems.Where(ci => ci.Date == dt).FirstOrDefault();
             var recurring = _calendarContext.Recurrings.Where(r => r.ReccuringType == typeOfRecurring).FirstOrDefault();
             var eventId = typeOfRecurring == null ? _calendarContext.Events.Where(e => e.Type.Equals(eventType)).FirstOrDefault().Id
                                                   : _calendarContext.Events.Where(e => e.ReccuringId.Equals(recurring.Id) && e.Type.Equals(eventType)).FirstOrDefault().Id; 
@@ -89,7 +92,7 @@ namespace CalendarWebAPI.Repositories
                                              : null;             
             
             List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
-            var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
+            var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
             schedulerItems.Add(dbScheduler);
             if(occ!= null)
             {
@@ -97,11 +100,12 @@ namespace CalendarWebAPI.Repositories
                 {
 
                     currentDate = currentDate.AddDays(occ.Value);
-                    calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == currentDate).FirstOrDefault();
+                    //calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == currentDate).FirstOrDefault();
+                    calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
                     //da ne dodajemo za neradne dane i praznike provjeravamo prvo je li taj dan working day. Inače nema smisla dodavati event
-                    if((bool)calendarItem.IsWorkingday)
+                    if ((bool)calendarItem.IsWorkingday)
                     {
-                        dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
+                        dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
                         schedulerItems.Add(dbScheduler);
                     }
                     //dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);

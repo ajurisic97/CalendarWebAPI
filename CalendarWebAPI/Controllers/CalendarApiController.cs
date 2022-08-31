@@ -26,7 +26,7 @@ namespace CalendarWebAPI.Controllers
 
         }
         [HttpGet]
-        public ActionResult<List<Models.CalendarItem>> GetAllCalendarItems(DateTime dt, DateTime dt2, int depth = 7)
+        public ActionResult<List<Models.CalendarItem>> GetAllCalendarItems(DateTime dt, DateTime dt2)
         {
             return _calendarItemsService.GetCalendarItemsWithSubCulendar(dt, dt2);
         }
