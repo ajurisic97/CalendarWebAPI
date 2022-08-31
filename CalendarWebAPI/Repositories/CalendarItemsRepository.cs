@@ -16,7 +16,10 @@ namespace CalendarWebAPI.Repositories
         }
         public Expression<Func<Calendar, FullCalendarDto>> GetCalendarProjection(DateTime? dt, DateTime? dt2, int maxDepth, int currentDepth = 0)
         {
-
+            if(maxDepth <= 0)
+            {
+                maxDepth = 1;
+            }
             currentDepth++;
             bool firstExists = !(dt == DateTime.MinValue);
             bool secondExists = !(dt2 == DateTime.MinValue);
@@ -40,12 +43,35 @@ namespace CalendarWebAPI.Repositories
             return result;
         }
 
+        public List<Models.CalendarItem> GetReccursiveItems(DateTime? dt, DateTime? dt2, Guid idParent, List<Models.CalendarItem> ci)
+        {
+            var calendarItems = _dbContext.CalendarItems.Where(x => x.Calendar.Id == idParent).Select(x => CalendarItemsMapper.FromDbCalendarItems(x));
+            var newDates = calendarItems.Select(x => x.Date).ToList();
+            //var AlreadyExisting = ci.Where(x => newDates.Contains(x.Date.Value)).ToList();
+            ci.RemoveAll(x => newDates.Contains(x.Date.Value));
+            ci.AddRange(calendarItems);
+            var child = _dbContext.Calendars.Where(x => x.PaentId == idParent).Select(x => x.Id).FirstOrDefault();
+            if(child!=Guid.Empty)
+            GetReccursiveItems(dt, dt2, child, ci);
+            return ci.OrderBy(x=>x.Date).ToList();
+
+        }
+
         public List<FullCalendarDto> GetCalendarsWithSubCalendars(DateTime? dt, DateTime? dt2, int depth=7)
         {
             var result = _dbContext.Calendars.Where(c => c.Paent == null).Select(GetCalendarProjection(dt, dt2, depth, 0));
+            var calendarItems = _dbContext.Calendars.Where(x => x.InversePaent == null).Select(x => x.CalendarItems);
             return result.ToList();
         }
 
+
+        public List<Models.CalendarItem> GetCalendarItemsWithSubCulendar(DateTime? dt, DateTime? dt2, int depth = 3)
+        {
+            List<Models.CalendarItem> calItems = new List<Models.CalendarItem>();
+            var firstParent = _dbContext.Calendars.Where(c => c.Paent == null).Select(x => x.Id).FirstOrDefault();
+            var test = GetReccursiveItems(dt, dt2, firstParent, calItems);
+            return test;
+        }
         public List<CalendarItem> FillCalendarItems(Models.Calendar calendar)
         {
             List<CalendarItem> items = new List<CalendarItem>();
@@ -98,7 +124,7 @@ namespace CalendarWebAPI.Repositories
 
         }
 
-
+        //For whole calendar
         public void Delete(Guid id)
         {
             var calendar = _dbContext.Calendars.AsNoTracking().FirstOrDefault(cal => cal.Id == id);
@@ -121,6 +147,7 @@ namespace CalendarWebAPI.Repositories
 
         }
 
+        //For whole calendar
         public void Edit(Models.Calendar calendar)
         {
             calendar.CreatedDate = DateTime.Now;
@@ -137,6 +164,7 @@ namespace CalendarWebAPI.Repositories
 
         }
 
+        //For 1 particular day from calendar
         public void EditCalendarItem(Models.CalendarItem calendarItem)
         {
             var dbCIItem = CalendarItemsMapper.ToDatabase(calendarItem);

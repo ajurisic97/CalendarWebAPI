@@ -19,6 +19,11 @@ namespace CalendarWebAPI.Services
             return _calendarItemsRepository.GetCalendarsWithSubCalendars(dt,dt2,depth);
         }
 
+        public List<Models.CalendarItem> GetCalendarItemsWithSubCulendar(DateTime? dt, DateTime? dt2, int depth = 3)
+        {
+            return _calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt,dt2,depth);
+        }
+
         public Calendar Add(Calendar calendar)
         {
             return _calendarItemsRepository.AddCalendar(calendar);

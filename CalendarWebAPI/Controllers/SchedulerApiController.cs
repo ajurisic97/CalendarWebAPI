@@ -27,9 +27,9 @@ namespace CalendarWebAPI.Controllers
         //[HttpGet("person_id")]
         //public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id)
         //{
-            
         //    return _schedulerService.GetByPerson(person_id).ToList();
         //}
+
 
         [HttpGet]
         public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id, DateTime startDate, DateTime endDate)
