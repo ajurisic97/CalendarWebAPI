@@ -19,7 +19,7 @@ namespace CalendarWebAPI.Repositories
         {
             bool firstExists = !(dt1 == DateTime.MinValue);
             bool secondExists = !(dt2 == DateTime.MinValue);
-            Expression<Func<Scheduler, Models.FullSchedulerItem>> result = scheduler => new Models.FullSchedulerItem()
+            Expression<Func<Scheduler, Models.FullSchedulerItem>> result =   scheduler =>  new Models.FullSchedulerItem()
             {
                 SchedulersItems = (!firstExists && !secondExists)
                 ? _calendarContext.SchedulerItems.Include(x=>x.CalendarItems).Where(x=>x.SchedulerId == scheduler.Id).Select(x=>SchedulerItemsMapper.FromDatabase(x)).ToList()
@@ -156,7 +156,7 @@ namespace CalendarWebAPI.Repositories
         public void DeleteSchedulerItem(Guid id)
         {
             var schedulerItem = _calendarContext.SchedulerItems.FirstOrDefault(x=>x.Id == id);
-            _calendarContext.Remove(schedulerItem);
+            _calendarContext.SchedulerItems.Remove(schedulerItem);
             _calendarContext.SaveChanges();
         }
 
