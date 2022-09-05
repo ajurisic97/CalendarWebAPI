@@ -28,7 +28,7 @@ namespace CalendarWebAPI.Mappers
 
         public static FilteredCalendarItem FilterData(CalendarItem calendarItem)
         {
-            return new FilteredCalendarItem(calendarItem.Id, calendarItem.Date, calendarItem.IsHoliday, calendarItem.IsWeekendday);
+            return new FilteredCalendarItem(calendarItem.Id, calendarItem.Date, calendarItem.IsHoliday, calendarItem.IsWeekendday, calendarItem.IsWorkingday);
         }
     }
 }

@@ -10,13 +10,14 @@
 
         public bool? IsWeekendday { get; set; }
 
-
-       public FilteredCalendarItem(Guid? id, DateTime? date, bool? isHoliday, bool? isWeekendday)
+        public bool? IsWorkingday { get; set; }
+       public FilteredCalendarItem(Guid? id, DateTime? date, bool? isHoliday, bool? isWeekendday, bool? isWorkingday)
         {
             Id = id;
             Date = date;
             IsHoliday = isHoliday;
             IsWeekendday = isWeekendday;
+            IsWorkingday = isWorkingday;
         }
     }
 }
