@@ -3,16 +3,16 @@
     public class Recurring
     {
         public Guid Id { get; set; }
-        public string ReccuringType { get; set; } = null!;
+        public string RecurringType { get; set; } = null!;
         public int? Separation { get; set; }
-        public int? NumOfOccurrences { get; set; }
+        public int? Gap { get; set; }
 
-        public Recurring(Guid id, string reccuringType, int? separation, int? numOfOccurrences)
+        public Recurring(Guid id, string reccuringType, int? separation, int? gap)
         {
             Id = id;
-            ReccuringType = reccuringType;
+            RecurringType = reccuringType;
             Separation = separation;
-            NumOfOccurrences = numOfOccurrences;
+            Gap = gap;
         }
     }
 }

@@ -78,7 +78,7 @@ namespace CalendarWebAPI.Repositories
             foreach (var personId in personIds)
             {
                 var schedulerItems = _calendarContext.SchedulerItems.Include(x => x.CalendarItems)
-                                                                    .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Reccuring)
+                                                                    .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Recurring)
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Person)
                                                                     .Where(x => x.Scheduler.PersonId == personId && x.Scheduler.Event.Type != 1
                                                                     && x.CalendarItems.Date>=dt && x.CalendarItems.Date<=dt2)
@@ -110,7 +110,7 @@ namespace CalendarWebAPI.Repositories
             //var calendarItem = _calendarContext.CalendarItems.Where(ci => ci.Date == dt).FirstOrDefault();
             var recurring = _calendarContext.Recurrings.Where(r => r.RecurringType == typeOfRecurring).FirstOrDefault();
             var eventId = typeOfRecurring == null ? _calendarContext.Events.Where(e => e.Type.Equals(eventType)).FirstOrDefault().Id
-                                                  : _calendarContext.Events.Where(e => e.ReccuringId.Equals(recurring.Id) && e.Type.Equals(eventType)).FirstOrDefault().Id; 
+                                                  : _calendarContext.Events.Where(e => e.RecurringId.Equals(recurring.Id) && e.Type.Equals(eventType)).FirstOrDefault().Id; 
 
             var schedulerId = _calendarContext.Schedulers.Where(s => s.PersonId.Equals(personId) && s.EventId.Equals(eventId)).Select(s => s.Id).FirstOrDefault();
             var currentDate = dt;

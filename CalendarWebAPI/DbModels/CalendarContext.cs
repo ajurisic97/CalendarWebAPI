@@ -208,9 +208,9 @@ namespace CalendarWebAPI.DbModels
 
                 entity.Property(e => e.Type).HasDefaultValueSql("((1))");
 
-                entity.HasOne(d => d.Reccuring)
+                entity.HasOne(d => d.Recurring)
                     .WithMany(p => p.Events)
-                    .HasForeignKey(d => d.ReccuringId)
+                    .HasForeignKey(d => d.RecurringId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Events_Recurrings");
             });

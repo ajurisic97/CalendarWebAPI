@@ -6,7 +6,7 @@
         public string Name { get; set; } = null!;
         public int Type { get; set; }
         public decimal Coefficient { get; set; }
-        public Guid ReccuringId { get; set; }
+        public Guid RecurringId { get; set; }
 
         public virtual ICollection<Scheduler> Schedulers { get; set; }
 
@@ -16,7 +16,7 @@
             Name = name;
             Type = type;
             Coefficient = coefficient;
-            ReccuringId = reccuringId;
+            RecurringId = reccuringId;
         }
     }
 }

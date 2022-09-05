@@ -14,9 +14,9 @@ namespace CalendarWebAPI.DbModels
         public string Name { get; set; } = null!;
         public int Type { get; set; }
         public decimal Coefficient { get; set; }
-        public Guid ReccuringId { get; set; }
+        public Guid RecurringId { get; set; }
 
-        public virtual Recurring Reccuring { get; set; } = null!;
+        public virtual Recurring Recurring { get; set; } = null!;
         public virtual ICollection<Scheduler> Schedulers { get; set; }
     }
 }
