@@ -84,7 +84,7 @@ namespace CalendarWebAPI.Repositories
                                                                     && x.CalendarItems.Date>=dt && x.CalendarItems.Date<=dt2)
                                                                     .Select(x => SchedulerItemsMapper.ToPersonCalendar(x));
                 
-                                                                    
+                                                               
                 personSchedulers.Add(new Models.PersonScheduler(personId,schedulerItems.ToList()));
             }
             return personSchedulers;

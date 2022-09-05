@@ -16,7 +16,7 @@ namespace CalendarWebAPI.Controllers
         {
             _calendarItemsService = calendarService;
         }
-
+        /*
         [HttpGet("dt1,dt2,depth")]
         public ActionResult<List<FullCalendarDto>> GetAll(DateTime dt1, DateTime dt2,int depth=7)
         {
@@ -24,13 +24,13 @@ namespace CalendarWebAPI.Controllers
             var objectResult = _calendarItemsService.GetAll(dt1, dt2,depth).ToList();
             return objectResult;
 
-        }
+        }*/
         [HttpGet]
         public ActionResult<List<Models.FilteredCalendarItem>> GetAllCalendarItems(DateTime dt, DateTime dt2)
         {
             return _calendarItemsService.GetCalendarItemsWithSubCulendar(dt, dt2);
         }
-
+        /*
         [HttpPost]
         public ActionResult<Calendar> Add([FromBody] JObject json)
         {
@@ -64,6 +64,6 @@ namespace CalendarWebAPI.Controllers
         {
             var dbCalendarItem = CalendarItemsDto.FromJson(json);
             return _calendarItemsService.AddCalendarItem(calendarId,dbCalendarItem);
-        }
+        }*/
     }
 }

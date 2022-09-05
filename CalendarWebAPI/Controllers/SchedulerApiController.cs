@@ -22,10 +22,6 @@ namespace CalendarWebAPI.Controllers
         [HttpGet("guids")]
         public ActionResult<List<PersonScheduler>> GetPersonCalendar(DateTime dt, DateTime dt2, [FromQuery] List<Guid> guids)
         {
-            if (!guids.Any() || guids.All(xx => Guid.Empty == xx))
-                return null;
-
-            
             return _schedulerService.GetPersonCalendars(guids, dt, dt2).ToList();
         }
 
@@ -46,6 +42,8 @@ namespace CalendarWebAPI.Controllers
 
         //period is "daily, weekly, monthly, yearly", endDate -> when does that recurring stop. If we don't write reccuring type and endDate we just post 1 
         // schedulerItem for date we wanted
+        
+        /*
         [HttpPost]
         public ActionResult<SchedulerItem> AddSchedulerItemRecurring(Guid person_id, int eventType, string? recurringType, DateTime? endDate,[FromBody] JObject json)
         {
@@ -65,6 +63,6 @@ namespace CalendarWebAPI.Controllers
         public void Delete(Guid id)
         {
             _schedulerService.Delete(id);
-        }
+        }*/
     }
 }
