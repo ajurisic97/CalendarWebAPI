@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
+
 namespace CalendarWebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -18,24 +19,22 @@ namespace CalendarWebAPI.Controllers
         }
 
 
-        //Ostavljam zakomentirano za potrebe eventualnog kasnijeg testiranja/koristenja
-        //[HttpGet]
-        //public ActionResult<List<FullSchedulerItem>> GetAll()
-        //{
-        //    return _schedulerService.GetAll().ToList();
-        //}
-        //[HttpGet("person_id")]
-        //public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id)
-        //{
-        //    return _schedulerService.GetByPerson(person_id).ToList();
-        //}
+        [HttpGet("guids")]
+        public ActionResult<List<PersonScheduler>> GetPersonCalendar(DateTime dt, DateTime dt2, [FromQuery] List<Guid> guids)
+        {
+            if (!guids.Any() || guids.All(xx => Guid.Empty == xx))
+                return null;
 
+            
+            return _schedulerService.GetPersonCalendars(guids, dt, dt2).ToList();
+        }
 
-        [HttpGet]
+        //ostavljam za buduce koristenje (sa start i enddate i filtrirano po eventima)
+        /*[HttpGet]
         public ActionResult<List<FullSchedulerItem>> GetByPerson(Guid person_id, DateTime startDate, DateTime endDate)
         {
             return _schedulerService.GetByDates(person_id, startDate, endDate).ToList();
-        }
+        }*/
 
         //[HttpPost]
         //public ActionResult<SchedulerItem> AddSchedulerItem([FromBody] JObject json)

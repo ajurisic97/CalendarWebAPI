@@ -51,6 +51,8 @@ namespace CalendarWebAPI.Repositories
             //Grouping by name of event (because of recurring types we have same event with diff recurring types):
             foreach(var item in result)
             {
+                //if fsi exists we just add schedulerItems for him. That is because data (schedulerItems) are connected to scheduler
+                // more scheduler have the same event name and same person but different recurring type. That is why we have to group them
                 var alreadyExists = fsi.Any(x => x.Name.Equals(item.Name));
                 if (alreadyExists)
                 {
@@ -63,8 +65,32 @@ namespace CalendarWebAPI.Repositories
             }
             //ako ne trebaju prazni nadodati: .Where(x=>x.SchedulersItems.Any())
             //eventualno filtracija i po imenu eventa .Where(x=>x.Name=="filteredName")
-            return fsi;
+            return fsi.Where(x=>x.SchedulersItems.Any());
         }
+
+        public IEnumerable<Models.PersonScheduler> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2)
+        {
+            List<Models.PersonScheduler> personSchedulers = new List<Models.PersonScheduler>();
+            if (dt2 == DateTime.MinValue)
+            {
+                dt2 = DateTime.MaxValue;
+            }
+            foreach (var personId in personIds)
+            {
+                var schedulerItems = _calendarContext.SchedulerItems.Include(x => x.CalendarItems)
+                                                                    .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Reccuring)
+                                                                    .Include(x => x.Scheduler).ThenInclude(x => x.Person)
+                                                                    .Where(x => x.Scheduler.PersonId == personId && x.Scheduler.Event.Type != 1
+                                                                    && x.CalendarItems.Date>=dt && x.CalendarItems.Date<=dt2)
+                                                                    .Select(x => SchedulerItemsMapper.ToPersonCalendar(x));
+                
+                                                                    
+                personSchedulers.Add(new Models.PersonScheduler(personId,schedulerItems.ToList()));
+            }
+            return personSchedulers;
+        }
+
+
         
         public Models.SchedulerItem AddSchedulerItem(Guid schedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
         {
@@ -94,7 +120,7 @@ namespace CalendarWebAPI.Repositories
             List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
             var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
             schedulerItems.Add(dbScheduler);
-            if(occ!= null)
+            if(occ!= null && occ!=0)
             {
                 while (currentDate.AddDays(occ.Value) <= EndDate)
                 {
@@ -103,7 +129,8 @@ namespace CalendarWebAPI.Repositories
                     //calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == currentDate).FirstOrDefault();
                     calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(currentDate, currentDate).FirstOrDefault();
                     //da ne dodajemo za neradne dane i praznike provjeravamo prvo je li taj dan working day. Inače nema smisla dodavati event
-                    if ((bool)calendarItem.IsWorkingday)
+                    // 109. linija inače ide if ((bool)calendarItem.IsWorkingDay)
+                    if ( !((bool)calendarItem.IsHoliday || (bool)calendarItem.IsHoliday))
                     {
                         dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
                         schedulerItems.Add(dbScheduler);

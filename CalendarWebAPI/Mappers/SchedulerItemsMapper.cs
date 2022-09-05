@@ -21,5 +21,10 @@ namespace CalendarWebAPI.Mappers
 
             };
         }
+
+        public static PersonCalendar ToPersonCalendar(DbModels.SchedulerItem sidb)
+        {
+            return new PersonCalendar(sidb.CalendarItems.Date, sidb.Scheduler.Event.Coefficient, sidb.Scheduler.Event.Type);
+        }
     }
 }

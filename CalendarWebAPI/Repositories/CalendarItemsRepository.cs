@@ -75,20 +75,24 @@ namespace CalendarWebAPI.Repositories
 
         public List<FullCalendarDto> GetCalendarsWithSubCalendars(DateTime? dt, DateTime? dt2, int depth=7)
         {
+            //JUST for adding uncomment
+            /*EventRepository eventRepository = new EventRepository(_dbContext);
+            eventRepository.AddEventsAndRecurrings();
+            eventRepository.AddPerson();*/
             var result = _dbContext.Calendars.Where(c => c.Paent == null).Select(GetCalendarProjection(dt, dt2, depth, 0));
             var calendarItems = _dbContext.Calendars.Where(x => x.InversePaent == null).Select(x => x.CalendarItems);
             return result.ToList();
         }
 
 
-        public List<Models.CalendarItem> GetCalendarItemsWithSubCulendar(DateTime? dt, DateTime? dt2, int depth = 3)
+        public List<Models.FilteredCalendarItem> GetCalendarItemsWithSubCulendar(DateTime? dt, DateTime? dt2, int depth = 3)
         {
-            //EventRepository eventRepository = new EventRepository(_dbContext);
-            //eventRepository.AddPerson();
+            
             List<Models.CalendarItem> calItems = new List<Models.CalendarItem>();
             var firstParent = _dbContext.Calendars.Where(c => c.Paent == null).Select(x => x.Id).FirstOrDefault();
             var test = GetReccursiveItems(dt, dt2, firstParent, calItems);
-            return test;
+            var filteredParameters = test.Select(x => CalendarItemsMapper.FilterData(x)).ToList();
+            return filteredParameters;
         }
         public List<CalendarItem> FillCalendarItems(Models.Calendar calendar)
         {

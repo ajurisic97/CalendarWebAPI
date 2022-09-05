@@ -15,6 +15,8 @@ namespace CalendarWebAPI.Repositories
 
         public void AddRecurrings()
         {
+            _dbContext.SchedulerItems.RemoveRange(_dbContext.SchedulerItems);
+            _dbContext.Schedulers.RemoveRange(_dbContext.Schedulers);
             _dbContext.Recurrings.RemoveRange(_dbContext.Recurrings);
             List<Recurring> listRecurrings = new List<Recurring>();
             string? path = AppDomain.CurrentDomain.BaseDirectory;
@@ -51,6 +53,7 @@ namespace CalendarWebAPI.Repositories
                         Id = new Guid(),
                         Coefficient=e.Coefficient,
                         Name=e.Name,
+                        Type=e.Type,
                         ReccuringId=recurring.Id
 
                     };
@@ -66,7 +69,7 @@ namespace CalendarWebAPI.Repositories
 
         public void AddPerson()
         {
-            AddEventsAndRecurrings();
+            
             _dbContext.SchedulerItems.RemoveRange(_dbContext.SchedulerItems);
             _dbContext.Schedulers.RemoveRange(_dbContext.Schedulers);
             _dbContext.People.RemoveRange(_dbContext.People);
