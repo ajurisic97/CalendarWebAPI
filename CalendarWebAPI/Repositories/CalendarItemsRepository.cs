@@ -36,7 +36,7 @@ namespace CalendarWebAPI.Repositories
                 :  _dbContext.CalendarItems.Where(x => x.CalendarId == calendar.Id && x.Date.Value >= dt).OrderBy(x => x.Date).Select(x => CalendarItemsMapper.FromDbCalendarItems(x)).ToList(),
                 SubCalendars = currentDepth == maxDepth
                 ? new List<FullCalendarDto>()
-                : calendar.InversePaent.AsQueryable().Select(GetCalendarProjection(dt, dt2, maxDepth, currentDepth)).ToList(),
+                : calendar.InverseParent.AsQueryable().Select(GetCalendarProjection(dt, dt2, maxDepth, currentDepth)).ToList(),
                 
 
             };
@@ -66,7 +66,7 @@ namespace CalendarWebAPI.Repositories
             //var AlreadyExisting = ci.Where(x => newDates.Contains(x.Date.Value)).ToList();
             ci.RemoveAll(x => newDates.Contains(x.Date.Value));
             ci.AddRange(calendarItems);
-            var child = _dbContext.Calendars.Where(x => x.PaentId == idParent).Select(x => x.Id).FirstOrDefault();
+            var child = _dbContext.Calendars.Where(x => x.ParentId == idParent).Select(x => x.Id).FirstOrDefault();
             if(child!=Guid.Empty)
             GetReccursiveItems(dt, dt2, child, ci);
             return ci.OrderBy(x=>x.Date).ToList();
@@ -79,8 +79,8 @@ namespace CalendarWebAPI.Repositories
             /*EventRepository eventRepository = new EventRepository(_dbContext);
             eventRepository.AddEventsAndRecurrings();
             eventRepository.AddPerson();*/
-            var result = _dbContext.Calendars.Where(c => c.Paent == null).Select(GetCalendarProjection(dt, dt2, depth, 0));
-            var calendarItems = _dbContext.Calendars.Where(x => x.InversePaent == null).Select(x => x.CalendarItems);
+            var result = _dbContext.Calendars.Where(c => c.Parent == null).Select(GetCalendarProjection(dt, dt2, depth, 0));
+            var calendarItems = _dbContext.Calendars.Where(x => x.InverseParent == null).Select(x => x.CalendarItems);
             return result.ToList();
         }
 
@@ -89,7 +89,7 @@ namespace CalendarWebAPI.Repositories
         {
             
             List<Models.CalendarItem> calItems = new List<Models.CalendarItem>();
-            var firstParent = _dbContext.Calendars.Where(c => c.Paent == null).Select(x => x.Id).FirstOrDefault();
+            var firstParent = _dbContext.Calendars.Where(c => c.Parent == null).Select(x => x.Id).FirstOrDefault();
             var test = GetReccursiveItems(dt, dt2, firstParent, calItems);
             var filteredParameters = test.Select(x => CalendarItemsMapper.FilterData(x)).ToList();
             return filteredParameters;
@@ -152,7 +152,7 @@ namespace CalendarWebAPI.Repositories
             var calendar = _dbContext.Calendars.AsNoTracking().FirstOrDefault(cal => cal.Id == id);
             var calendarItems = _dbContext.CalendarItems.AsNoTracking().Where(cal => cal.CalendarId == id).ToList();
 
-            var children = _dbContext.Calendars.AsNoTracking().Where(cal => cal.PaentId == id).ToList();
+            var children = _dbContext.Calendars.AsNoTracking().Where(cal => cal.ParentId == id).ToList();
             foreach (var child in children)
             {
                 var nove = _dbContext.CalendarItems.AsNoTracking().Where(cal => cal.CalendarId == child.Id).ToList();

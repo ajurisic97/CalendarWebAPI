@@ -8,11 +8,11 @@ namespace CalendarWebAPI.DbModels
         public Calendar()
         {
             CalendarItems = new HashSet<CalendarItem>();
-            InversePaent = new HashSet<Calendar>();
+            InverseParent = new HashSet<Calendar>();
         }
 
         public Guid Id { get; set; }
-        public Guid? PaentId { get; set; }
+        public Guid? ParentId { get; set; }
         public Guid? CreatorId { get; set; }
         public int Year { get; set; }
         public string Description { get; set; } = null!;
@@ -23,8 +23,8 @@ namespace CalendarWebAPI.DbModels
         public byte[]? RowVersion { get; set; }
 
         public virtual Creator? Creator { get; set; }
-        public virtual Calendar? Paent { get; set; }
+        public virtual Calendar? Parent { get; set; }
         public virtual ICollection<CalendarItem> CalendarItems { get; set; }
-        public virtual ICollection<Calendar> InversePaent { get; set; }
+        public virtual ICollection<Calendar> InverseParent { get; set; }
     }
 }

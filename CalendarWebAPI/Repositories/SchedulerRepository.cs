@@ -108,13 +108,13 @@ namespace CalendarWebAPI.Repositories
             var dt = schedulerItem.Date;
             var calendarItem=_calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
             //var calendarItem = _calendarContext.CalendarItems.Where(ci => ci.Date == dt).FirstOrDefault();
-            var recurring = _calendarContext.Recurrings.Where(r => r.ReccuringType == typeOfRecurring).FirstOrDefault();
+            var recurring = _calendarContext.Recurrings.Where(r => r.RecurringType == typeOfRecurring).FirstOrDefault();
             var eventId = typeOfRecurring == null ? _calendarContext.Events.Where(e => e.Type.Equals(eventType)).FirstOrDefault().Id
                                                   : _calendarContext.Events.Where(e => e.ReccuringId.Equals(recurring.Id) && e.Type.Equals(eventType)).FirstOrDefault().Id; 
 
             var schedulerId = _calendarContext.Schedulers.Where(s => s.PersonId.Equals(personId) && s.EventId.Equals(eventId)).Select(s => s.Id).FirstOrDefault();
             var currentDate = dt;
-            var occ = typeOfRecurring !=null ? recurring.NumOfOccurrences 
+            var occ = typeOfRecurring !=null ? recurring.Gap 
                                              : null;             
             
             List<SchedulerItem> schedulerItems = new List<SchedulerItem>();

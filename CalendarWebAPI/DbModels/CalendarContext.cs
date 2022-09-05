@@ -70,9 +70,9 @@ namespace CalendarWebAPI.DbModels
                     .HasForeignKey(d => d.CreatorId)
                     .HasConstraintName("FK_Calendar_Creators");
 
-                entity.HasOne(d => d.Paent)
-                    .WithMany(p => p.InversePaent)
-                    .HasForeignKey(d => d.PaentId)
+                entity.HasOne(d => d.Parent)
+                    .WithMany(p => p.InverseParent)
+                    .HasForeignKey(d => d.ParentId)
                     .HasConstraintName("FK_Calendar_Calendar");
             });
 
@@ -82,12 +82,9 @@ namespace CalendarWebAPI.DbModels
 
                 entity.ToTable("CalendarDate", "Catalog");
 
-                entity.Property(e => e.Has53Isoweeks).HasColumnName("Has53ISOWeeks");
-
-                entity.Property(e => e.Mmyyyy)
+                entity.Property(e => e.MMYYYY)
                     .HasMaxLength(6)
                     .IsUnicode(false)
-                    .HasColumnName("MMYYYY")
                     .IsFixedLength();
 
                 entity.Property(e => e.Style101)
@@ -128,10 +125,6 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.TheFirstOfWeek).HasColumnType("date");
 
                 entity.Property(e => e.TheFirstOfYear).HasColumnType("date");
-
-                entity.Property(e => e.TheIsoweek).HasColumnName("TheISOweek");
-
-                entity.Property(e => e.TheIsoyear).HasColumnName("TheISOYear");
 
                 entity.Property(e => e.TheLastOfMonth).HasColumnType("date");
 
@@ -308,7 +301,7 @@ namespace CalendarWebAPI.DbModels
 
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-                entity.Property(e => e.ReccuringType).HasMaxLength(50);
+                entity.Property(e => e.RecurringType).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Scheduler>(entity =>
