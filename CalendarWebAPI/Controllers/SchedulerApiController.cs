@@ -23,10 +23,10 @@ namespace CalendarWebAPI.Controllers
         public ActionResult<List<PersonScheduler>> GetPersonCalendar(DateTime dt, DateTime dt2, [FromQuery] List<Guid> guids)
         {
             if (!guids.Any() || guids.All(xx => Guid.Empty == xx))
-                return null;
+                return NotFound();
 
             
-            return _schedulerService.GetPersonCalendars(guids, dt, dt2).ToList();
+            return Ok(_schedulerService.GetPersonCalendars(guids, dt, dt2).ToList());
         }
 
         //ostavljam za buduce koristenje (sa start i enddate i filtrirano po eventima)
@@ -51,7 +51,7 @@ namespace CalendarWebAPI.Controllers
         {
             var schedulerItem = SchedulerDto.SIFromJson(json);
             _schedulerService.AddRecurringSchedulerItems(person_id,eventType,schedulerItem,recurringType,endDate);
-            return schedulerItem;
+            return Ok(schedulerItem);
         }
 
         [HttpPut("id")]

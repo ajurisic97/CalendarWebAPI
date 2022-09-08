@@ -1,5 +1,6 @@
 ﻿using CalendarWebAPI.DbModels;
 using CalendarWebAPI.Mappers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -33,15 +34,16 @@ namespace CalendarWebAPI.Repositories
             return result;
         }
 
-        public IEnumerable<Models.FullSchedulerItem> GetFull()
+        public async Task<ActionResult<IEnumerable<Models.FullSchedulerItem>>> GetFull()
         {                                     
-            var result = _calendarContext.Schedulers.Select(GetSchedulerProjection(null,null));
-            return result.ToList();
+            var result = await _calendarContext.Schedulers.Select(GetSchedulerProjection(null,null)).ToListAsync();
+            return result;
         }
 
-        public IEnumerable<Models.FullSchedulerItem> GetByPersonId(Guid id)
+        public async Task<ActionResult<IEnumerable<Models.FullSchedulerItem>>> GetByPersonId(Guid id)
         {
-            return _calendarContext.Schedulers.Where(x=>x.PersonId==id).Select(GetSchedulerProjection(null,null));
+            var result= await _calendarContext.Schedulers.Where(x=>x.PersonId==id).Select(GetSchedulerProjection(null,null)).ToListAsync();
+            return result;
         }
 
         public IEnumerable<Models.FullSchedulerItem> GetByPersonAndDate(Guid id,DateTime dt, DateTime dt2)
@@ -65,7 +67,7 @@ namespace CalendarWebAPI.Repositories
             }
             //ako ne trebaju prazni nadodati: .Where(x=>x.SchedulersItems.Any())
             //eventualno filtracija i po imenu eventa .Where(x=>x.Name=="filteredName")
-            return fsi.Where(x=>x.SchedulersItems.Any());
+            return fsi.Where(x => x.SchedulersItems.Any());
         }
 
         public IEnumerable<Models.PersonScheduler> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2)
@@ -130,9 +132,13 @@ namespace CalendarWebAPI.Repositories
                     calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(currentDate, currentDate).FirstOrDefault();
                     //da ne dodajemo za neradne dane i praznike provjeravamo prvo je li taj dan working day. Inače nema smisla dodavati event
                     // 109. linija inače ide if ((bool)calendarItem.IsWorkingDay)
-                    if ( !((bool)calendarItem.IsHoliday || (bool)calendarItem.IsHoliday))
+                    if ((bool)calendarItem.IsWorkingday)
                     {
                         dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
+                        //ako zelimo na razini aplikacije provjeravat podudaranje pocetnog i krajnjenjeg vremena za odredeni datum makni komentar sljd 3 linije:
+                        //var eventExists = _calendarContext.SchedulerItems
+                        //    .Any(s => (s.StartTime==dbScheduler.StartTime || s.EndTime==dbScheduler.EndTime)&&s.CalendarItemsId==calendarItem.Id);
+                        //if(!eventExists)
                         schedulerItems.Add(dbScheduler);
                     }
                     //dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);

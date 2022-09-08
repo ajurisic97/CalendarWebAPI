@@ -1,5 +1,6 @@
 ﻿using CalendarWebAPI.Models;
 using CalendarWebAPI.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CalendarWebAPI.Services
 {
@@ -11,18 +12,18 @@ namespace CalendarWebAPI.Services
             _schedulerRepository = schedulerRepository;
         }
 
-        public IEnumerable<FullSchedulerItem> GetAll()
+        public async Task<ActionResult<IEnumerable<FullSchedulerItem>>> GetAll()
         {
-            return _schedulerRepository.GetFull();
+            return await _schedulerRepository.GetFull();
         }
 
-        public IEnumerable<FullSchedulerItem> GetByPerson(Guid id)
+        public Task<ActionResult<IEnumerable<FullSchedulerItem>>> GetByPerson(Guid id)
         {
             return _schedulerRepository.GetByPersonId(id);
         }
         public IEnumerable<FullSchedulerItem> GetByDates(Guid id,DateTime dt, DateTime dt2)
         {
-            return _schedulerRepository.GetByPersonAndDate(id,dt,dt2);
+            return  _schedulerRepository.GetByPersonAndDate(id,dt,dt2);
         }
 
         public IEnumerable<PersonScheduler> GetPersonCalendars(List<Guid> personId,DateTime dt, DateTime dt2)

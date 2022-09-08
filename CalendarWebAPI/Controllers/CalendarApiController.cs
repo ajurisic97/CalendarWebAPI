@@ -4,6 +4,7 @@ using CalendarWebAPI.Services;
 using CalendarWebAPI.Models;
 using CalendarWebAPI.Dtos;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Cors;
 
 namespace CalendarWebAPI.Controllers
 {
@@ -16,7 +17,7 @@ namespace CalendarWebAPI.Controllers
         {
             _calendarItemsService = calendarService;
         }
-
+        [EnableCors("http://localhost:3000/")]
         [HttpGet("dt1,dt2,depth")]
         public ActionResult<List<FullCalendarDto>> GetAll(DateTime dt1, DateTime dt2,int depth=7)
         {
@@ -25,6 +26,7 @@ namespace CalendarWebAPI.Controllers
             return objectResult;
 
         }
+        [EnableCors("http://localhost:3000/")]
         [HttpGet]
         public ActionResult<List<Models.FilteredCalendarItem>> GetAllCalendarItems(DateTime dt, DateTime dt2)
         {
