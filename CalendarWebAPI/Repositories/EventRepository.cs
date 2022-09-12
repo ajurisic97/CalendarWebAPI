@@ -1,4 +1,5 @@
 ﻿using CalendarWebAPI.DbModels;
+using CalendarWebAPI.Mappers;
 using System.Text.Json;
 
 namespace CalendarWebAPI.Repositories
@@ -12,7 +13,12 @@ namespace CalendarWebAPI.Repositories
             _dbContext = dbContext;
         }
 
+        public IEnumerable<Models.Event> GetEvents()
+        {
+            return _dbContext.Events.Select(x => EventMapper.FromDatabase(x));
+        }
 
+        
         public void AddRecurrings()
         {
             _dbContext.SchedulerItems.RemoveRange(_dbContext.SchedulerItems);

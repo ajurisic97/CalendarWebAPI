@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CORSPolicy", policy =>
     {
-        policy.WithOrigins("https://localhost:7025").AllowAnyHeader().AllowAnyMethod();
+        policy.WithOrigins("https://localhost:8158").AllowAnyHeader().AllowAnyMethod();
     });
 });
 builder.Services.AddControllers();
@@ -21,10 +21,13 @@ builder.Services.AddSwaggerGen();
 //REPOSITORIES
 builder.Services.AddScoped<CalendarItemsRepository>();
 builder.Services.AddScoped<SchedulerRepository>();
+builder.Services.AddScoped<EventRepository>();
+builder.Services.AddScoped<PersonRepository>();
 //SERVICES
 builder.Services.AddScoped<CalendarItemsService>();
 builder.Services.AddScoped<SchedulerService>();
-
+builder.Services.AddScoped<EventService>();
+builder.Services.AddScoped<PersonService>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddControllers().AddNewtonsoftJson(o =>
