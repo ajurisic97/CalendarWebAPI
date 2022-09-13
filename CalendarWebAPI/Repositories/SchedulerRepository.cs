@@ -79,10 +79,11 @@ namespace CalendarWebAPI.Repositories
             }
             foreach (var personId in personIds)
             {
+                //za ivana dodati u where uvjet && x.Scheduler.Event.Type != 1
                 var schedulerItems = _calendarContext.SchedulerItems.Include(x => x.CalendarItems)
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Recurring)
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Person)
-                                                                    .Where(x => x.Scheduler.PersonId == personId && x.Scheduler.Event.Type != 1
+                                                                    .Where(x => x.Scheduler.PersonId == personId  
                                                                     && x.CalendarItems.Date>=dt && x.CalendarItems.Date<=dt2)
                                                                     .Select(x => SchedulerItemsMapper.ToPersonCalendar(x));
                 
