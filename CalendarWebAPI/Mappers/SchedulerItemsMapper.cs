@@ -24,7 +24,7 @@ namespace CalendarWebAPI.Mappers
 
         public static PersonCalendar ToPersonCalendar(DbModels.SchedulerItem sidb)
         {
-            return new PersonCalendar(sidb.CalendarItems.Date, sidb.Scheduler.Event.Coefficient, sidb.Scheduler.Event.Type, sidb.StartTime, sidb.EndTime);
+            return new PersonCalendar(sidb.Id,sidb.CalendarItems.Date, sidb.Scheduler.Event.Coefficient, sidb.Scheduler.Event.Type, sidb.StartTime, sidb.EndTime);
         }
     }
 }

@@ -151,15 +151,24 @@ namespace CalendarWebAPI.Repositories
             _calendarContext.SaveChanges();
 
         }
-        public void EditSchedulerItem(Guid schedulerId,DateTime dt,Models.SchedulerItem schedulerItem)
+        public void EditSchedulerItem(int eventType, string recurring,DateTime dt,Models.SchedulerItem schedulerItem)
         {
             var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == dt).FirstOrDefault();
+            var eventId = _calendarContext.Events.Where(x => x.Type == eventType && x.Recurring.RecurringType == recurring).Select(x=>x.Id).FirstOrDefault();
+            var schedulerId = _calendarContext.Schedulers.Where(x=>x.EventId == eventId).Select(x=>x.Id).FirstOrDefault(); // dodat za persona uvjet
+
             schedulerItem.Date = dt;
             var dbSchedulerItem = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
             _calendarContext.SchedulerItems.Update(dbSchedulerItem);
             _calendarContext.SaveChanges();
         }
 
+        //public void Edit(Models.SchedulerItem schedulerItem)
+        //{
+        //    var dbSchedulerItem = SchedulerItemsMapper.ToDatabase(schedulerItem);
+        //    _calendarContext.SchedulerItems.Update(dbSchedulerItem);
+        //    _calendarContext.SaveChanges();
+        //}
         public void DeleteSchedulerItem(Guid id)
         {
             var schedulerItem = _calendarContext.SchedulerItems.FirstOrDefault(x=>x.Id == id);

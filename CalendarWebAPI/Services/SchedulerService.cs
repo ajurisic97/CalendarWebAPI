@@ -39,9 +39,9 @@ namespace CalendarWebAPI.Services
         {
             _schedulerRepository.AddRecurringItems(personId,eventType, schedulerItem,recurringType, endDate);
         }
-        public void Edit(Guid schedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
+        public void Edit(int eventType, string recurring,DateTime dt, Models.SchedulerItem schedulerItem)
         {
-            _schedulerRepository.EditSchedulerItem(schedulerId,dt, schedulerItem);
+            _schedulerRepository.EditSchedulerItem(eventType,recurring,dt, schedulerItem);
         }
 
         public void Delete(Guid id)

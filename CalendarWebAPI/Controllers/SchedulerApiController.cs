@@ -58,7 +58,7 @@ namespace CalendarWebAPI.Controllers
         public void Edit([FromBody] JObject json)
         {
             var schedulerInfo = SchedulerDto.FromJson(json);
-            _schedulerService.Edit(schedulerInfo.SchedulerId, schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
+            _schedulerService.Edit(0,"None", schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
         }
 
         [HttpDelete("id")]
