@@ -46,25 +46,44 @@ namespace CalendarWebAPI.Controllers
 
         //period is "daily, weekly, monthly, yearly", endDate -> when does that recurring stop. If we don't write reccuring type and endDate we just post 1 
         // schedulerItem for date we wanted
-        [HttpPost]
-        public ActionResult<SchedulerItem> AddSchedulerItemRecurring(Guid person_id, int eventType, string? recurringType, DateTime? endDate,[FromBody] JObject json)
-        {
-            var schedulerItem = SchedulerDto.SIFromJson(json);
-            _schedulerService.AddRecurringSchedulerItems(person_id,eventType,schedulerItem,recurringType,endDate);
-            return Ok(schedulerItem);
-        }
 
-        [HttpPut("id")]
-        public void Edit([FromBody] JObject json)
-        {
-            var schedulerInfo = SchedulerDto.FromJson(json);
-            _schedulerService.Edit(0,"None", schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
-        }
 
+
+        // DIREKTNO DODAVANJE U BAZU, ZASAD ZAKOMENTIRANO JER IDE POKUSAJ DA SE PRVO LOKALNO SPREMAJU NOVI DOGADAJI, A ZATIM TEK U BAZU:
+        //[HttpPost]
+        //public ActionResult<SchedulerItem> AddSchedulerItemRecurring(Guid person_id, int eventType, string? recurringType, DateTime? endDate,[FromBody] JObject json)
+        //{
+        //    var schedulerItem = SchedulerDto.SIFromJson(json);
+        //    _schedulerService.AddRecurringSchedulerItems(person_id,eventType,schedulerItem,recurringType,endDate);
+        //    return Ok(schedulerItem);
+        //}
+
+        //stari nacin za edit koji funckionira, ali za sucelje mi treba drukciji jer nemam sve podatke dostupne 
+        //[HttpPut("id")]
+        //public void Edit([FromBody] JObject json)
+        //{
+        //    var schedulerInfo = SchedulerDto.FromJson(json);
+        //    _schedulerService.Edit(0,"None", schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
+        //}
+        [HttpPut]
+        public void Edit(Guid person_id, int eventType, string? recurringType, DateTime dt, [FromBody] JObject json)
+        {
+
+            var schedulerItem = SchedulerDto.FromJsonEdit(json);
+            _schedulerService.EditPersonEvent(person_id, eventType, recurringType,dt, schedulerItem);
+        }
         [HttpDelete("id")]
         public void Delete(Guid id)
         {
             _schedulerService.Delete(id);
+        }
+
+        [HttpPost]
+        public ActionResult<List<RecurringSchedulerItems>> AddOnSaveChanges([FromBody] List<JObject> json)
+        {
+            List<RecurringSchedulerItems> rsi = RecurringSchedulersDto.FromJson(json);
+            _schedulerService.AddOnSaveChanges(rsi);
+            return Ok();
         }
     }
 }

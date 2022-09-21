@@ -15,8 +15,6 @@ namespace CalendarWebAPI.Dtos
             var date = json["Date"].ToObject<DateTime>();
             var schedulerItem = new SchedulerItem(Id,startTime, endTime, date);
             return new SchedulerInfo(schedulerItem, schedulerId);
-
-
         }
 
         //POST
@@ -26,6 +24,16 @@ namespace CalendarWebAPI.Dtos
             var endTime = json["EndTime"].ToObject<TimeSpan>();
             var date = json["Date"].ToObject<DateTime>();
             var schedulerItem = new SchedulerItem(null, startTime, endTime, date);
+            return schedulerItem;
+        }
+
+        public static SchedulerItem FromJsonEdit(JObject json)
+        {
+            var id = json["Id"].ToObject<Guid>();
+            var startTime = json["StartTime"].ToObject<TimeSpan>();
+            var endTime = json["EndTime"].ToObject<TimeSpan>();
+            var date = json["Date"].ToObject<DateTime>();
+            var schedulerItem = new SchedulerItem(id, startTime, endTime, date);
             return schedulerItem;
         }
     }
