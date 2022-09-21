@@ -198,6 +198,25 @@ namespace CalendarWebAPI.Repositories
             _calendarContext.SaveChanges();
 
         }
+
+        public void EditOnSaveChanges(List<Models.RecurringSchedulerItems> listSchedulers)
+        {
+            List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
+            foreach (Models.RecurringSchedulerItems rsi in listSchedulers)
+            {
+                var schedulerItem = rsi.SchedulerItem;
+                var eventType = rsi.EventType;
+                var recurring = "None";
+                var personId = rsi.PersonId;
+                var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == schedulerItem.Date).FirstOrDefault();
+                var eventId = _calendarContext.Events.Where(x => x.Type == eventType && x.Recurring.RecurringType == recurring).Select(x => x.Id).FirstOrDefault();
+                var schedulerId = _calendarContext.Schedulers.Where(x => x.EventId == eventId && x.PersonId == personId).Select(x => x.Id).FirstOrDefault(); 
+                var dbSchedulerItem = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
+                _calendarContext.SchedulerItems.Update(dbSchedulerItem);
+                
+            }
+            _calendarContext.SaveChanges();
+        }
         public void EditSchedulerItem(int eventType, string recurring,DateTime dt,Models.SchedulerItem schedulerItem)
         {
             var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == dt).FirstOrDefault();
@@ -228,14 +247,22 @@ namespace CalendarWebAPI.Repositories
         //    _calendarContext.SchedulerItems.Update(dbSchedulerItem);
         //    _calendarContext.SaveChanges();
         //}
-        public void DeleteSchedulerItem(Guid id)
+        public void DeleteSchedulerItem(List<Guid> ids)
         {
-            var schedulerItem = _calendarContext.SchedulerItems.FirstOrDefault(x=>x.Id == id);
-            if(schedulerItem != null)
+            List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
+            foreach(Guid id in ids)
             {
-                _calendarContext.SchedulerItems.Remove(schedulerItem);
-                _calendarContext.SaveChanges();
+                var schedulerItem = _calendarContext.SchedulerItems.FirstOrDefault(x => x.Id == id);
+                if (schedulerItem != null)
+                {
+                    schedulerItems.Add(schedulerItem);
+                }
+                
             }
+            
+            _calendarContext.SchedulerItems.RemoveRange(schedulerItems);
+            _calendarContext.SaveChanges();
+            
 
         }
 

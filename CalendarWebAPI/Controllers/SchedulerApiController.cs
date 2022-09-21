@@ -65,17 +65,25 @@ namespace CalendarWebAPI.Controllers
         //    var schedulerInfo = SchedulerDto.FromJson(json);
         //    _schedulerService.Edit(0,"None", schedulerInfo.SchedulerItem.Date, schedulerInfo.SchedulerItem);
         //}
+        //[HttpPut]
+        //public void Edit(Guid person_id, int eventType, string? recurringType, DateTime dt, [FromBody] JObject json)
+        //{
+
+        //    var schedulerItem = SchedulerDto.FromJsonEdit(json);
+        //    _schedulerService.EditPersonEvent(person_id, eventType, recurringType,dt, schedulerItem);
+        //}
         [HttpPut]
-        public void Edit(Guid person_id, int eventType, string? recurringType, DateTime dt, [FromBody] JObject json)
+        public void EditOnSaveChanges([FromBody] List<JObject> json)
         {
 
-            var schedulerItem = SchedulerDto.FromJsonEdit(json);
-            _schedulerService.EditPersonEvent(person_id, eventType, recurringType,dt, schedulerItem);
+            List<RecurringSchedulerItems> rsi = RecurringSchedulersDto.FromJson(json);
+
+            _schedulerService.EditOnSaveChanges(rsi);
         }
-        [HttpDelete("id")]
-        public void Delete(Guid id)
+        [HttpDelete("ids")]
+        public void Delete([FromQuery] List<Guid> ids)
         {
-            _schedulerService.Delete(id);
+            _schedulerService.Delete(ids);
         }
 
         [HttpPost]

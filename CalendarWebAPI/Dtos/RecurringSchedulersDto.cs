@@ -14,7 +14,7 @@ namespace CalendarWebAPI.Dtos
                 var json = jsonList[i];
                 var date = json["startTime"].ToObject<DateTime>();
                 var startTime = new TimeSpan(date.Hour, date.Minute, date.Second);
-
+                
                 var end = json["endTime"].ToObject<DateTime>();
 
                 var endTime = new TimeSpan(end.Hour, end.Minute, end.Second);
@@ -22,7 +22,12 @@ namespace CalendarWebAPI.Dtos
                 var personId = json["Person"].ToObject<Guid>();
                 var eventType = json["title"].ToObject<int>();
                 var endDate = json["EndDate"].ToObject<DateTime>();
-                var schedulerItem = new SchedulerItem(null, startTime, endTime, date);
+                var schedulerItemsId=Guid.NewGuid();
+                if (json.ContainsKey("eventId"))
+                {
+                    schedulerItemsId = json["eventId"].ToObject<Guid>();
+                }
+                var schedulerItem = new SchedulerItem(schedulerItemsId, startTime, endTime, date);
                 var typeOfRecurring = json["Recurring"].ToObject<string>();
                 var scheduler = new RecurringSchedulerItems(personId, eventType, schedulerItem, typeOfRecurring, endDate);
                 items.Add(scheduler);

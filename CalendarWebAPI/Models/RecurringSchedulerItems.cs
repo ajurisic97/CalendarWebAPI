@@ -8,6 +8,8 @@
         public SchedulerItem SchedulerItem { get; set; }
         public string? TypeOfRecurring { get; set; }
         public DateTime? EndDate { get; set; }
+
+        
         public RecurringSchedulerItems(Guid personId, int eventType, SchedulerItem schedulerItem, string? typeOfRecurring, DateTime? endDate)
         {
             PersonId = personId;
