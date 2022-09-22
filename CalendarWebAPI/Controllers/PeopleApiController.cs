@@ -21,14 +21,6 @@ namespace CalendarWebAPI.Controllers
             return _personService.GetAll().ToList();
         }
 
-        //Ovo je kasnije za sucelje:
-        //[HttpPost]
-        //public ActionResult<Person> Add([FromBody] JObject json)
-        //{
-        //    var p = PersonDto.FromJson(json);
-        //    return _personService.Add(p);
-        //}
-
         [HttpPost]
         public ActionResult<Person> Add(Person person)
         {

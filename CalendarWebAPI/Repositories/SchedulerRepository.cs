@@ -34,42 +34,6 @@ namespace CalendarWebAPI.Repositories
             return result;
         }
 
-        public async Task<ActionResult<IEnumerable<Models.FullSchedulerItem>>> GetFull()
-        {                                     
-            var result = await _calendarContext.Schedulers.Select(GetSchedulerProjection(null,null)).ToListAsync();
-            return result;
-        }
-
-        public async Task<ActionResult<IEnumerable<Models.FullSchedulerItem>>> GetByPersonId(Guid id)
-        {
-            var result= await _calendarContext.Schedulers.Where(x=>x.PersonId==id).Select(GetSchedulerProjection(null,null)).ToListAsync();
-            return result;
-        }
-
-        public IEnumerable<Models.FullSchedulerItem> GetByPersonAndDate(Guid id,DateTime dt, DateTime dt2)
-        {
-            var result = _calendarContext.Schedulers.Where(x => x.PersonId == id).Select(GetSchedulerProjection(dt,dt2)).ToList();
-            List<Models.FullSchedulerItem> fsi = new List<Models.FullSchedulerItem>();
-            //Grouping by name of event (because of recurring types we have same event with diff recurring types):
-            foreach(var item in result)
-            {
-                //if fsi exists we just add schedulerItems for him. That is because data (schedulerItems) are connected to scheduler
-                // more scheduler have the same event name and same person but different recurring type. That is why we have to group them
-                var alreadyExists = fsi.Any(x => x.Name.Equals(item.Name));
-                if (alreadyExists)
-                {
-                    fsi.Where(x => x.Name.Equals(item.Name)).First().SchedulersItems.AddRange(item.SchedulersItems);
-                }
-                else
-                {
-                    fsi.Add(item);
-                }
-            }
-            //ako ne trebaju prazni nadodati: .Where(x=>x.SchedulersItems.Any())
-            //eventualno filtracija i po imenu eventa .Where(x=>x.Name=="filteredName")
-            return fsi.Where(x => x.SchedulersItems.Any());
-        }
-
         public IEnumerable<Models.PersonScheduler> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2)
         {
             List<Models.PersonScheduler> personSchedulers = new List<Models.PersonScheduler>();
@@ -91,68 +55,6 @@ namespace CalendarWebAPI.Repositories
                 personSchedulers.Add(new Models.PersonScheduler(personId,schedulerItems.ToList()));
             }
             return personSchedulers;
-        }
-
-
-        
-        public Models.SchedulerItem AddSchedulerItem(Guid schedulerId,DateTime dt, Models.SchedulerItem schedulerItem)
-        {
-            var calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
-            var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId,(Guid)calendarItem.Id,schedulerItem);
-            
-            _calendarContext.SchedulerItems.Add(dbScheduler);
-            _calendarContext.SaveChanges();
-            return schedulerItem;
-
-        }
-         
-
-        //metoda kad sam dodavao 1 po 1 u bazu:
-        public void AddRecurringItems(Guid personId,int eventType,Models.SchedulerItem schedulerItem, string? typeOfRecurring,DateTime? EndDate)
-        {
-            var dt = schedulerItem.Date;
-            var calendarItem=_calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
-            //var calendarItem = _calendarContext.CalendarItems.Where(ci => ci.Date == dt).FirstOrDefault();
-            var recurring = _calendarContext.Recurrings.Where(r => r.RecurringType == typeOfRecurring).FirstOrDefault();
-            var eventId = typeOfRecurring == null ? _calendarContext.Events.Where(e => e.Type.Equals(eventType)).FirstOrDefault().Id
-                                                  : _calendarContext.Events.Where(e => e.RecurringId.Equals(recurring.Id) && e.Type.Equals(eventType)).FirstOrDefault().Id; 
-
-            var schedulerId = _calendarContext.Schedulers.Where(s => s.PersonId.Equals(personId) && s.EventId.Equals(eventId)).Select(s => s.Id).FirstOrDefault();
-            var currentDate = dt;
-            var occ = typeOfRecurring !=null ? recurring.Gap 
-                                             : null;             
-            
-            List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
-            var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
-            dbScheduler.Id = Guid.NewGuid();
-            schedulerItems.Add(dbScheduler);
-            if(occ!= null && occ!=0)
-            {
-                while (currentDate.AddDays(occ.Value) <= EndDate)
-                {
-
-                    currentDate = currentDate.AddDays(occ.Value);
-                    //calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == currentDate).FirstOrDefault();
-                    calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(currentDate, currentDate).FirstOrDefault();
-                    //da ne dodajemo za neradne dane i praznike provjeravamo prvo je li taj dan working day. Inače nema smisla dodavati event
-                    // 109. linija inače ide if ((bool)calendarItem.IsWorkingDay)
-                    if ((bool)calendarItem.IsWorkingday)
-                    {
-                        dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
-                        //ako zelimo na razini aplikacije provjeravat podudaranje pocetnog i krajnjenjeg vremena za odredeni datum makni komentar sljd 3 linije:
-                        //var eventExists = _calendarContext.SchedulerItems
-                        //    .Any(s => (s.StartTime==dbScheduler.StartTime || s.EndTime==dbScheduler.EndTime)&&s.CalendarItemsId==calendarItem.Id);
-                        //if(!eventExists)
-                        schedulerItems.Add(dbScheduler);
-                    }
-                    //dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
-                    //schedulerItems.Add(dbScheduler);
-                }
-            }
-            
-            _calendarContext.SchedulerItems.AddRange(schedulerItems);
-            _calendarContext.SaveChanges();
-
         }
 
         public void AddOnSaveChanges(List<Models.RecurringSchedulerItems> listSchedulers)
@@ -193,7 +95,6 @@ namespace CalendarWebAPI.Repositories
                     }
                 }
             }
-            //tek kad smo sve lokalno spremili onda spremamo sve odjednom u bazu:
             _calendarContext.SchedulerItems.AddRange(schedulerItems);
             _calendarContext.SaveChanges();
 
@@ -217,36 +118,7 @@ namespace CalendarWebAPI.Repositories
             }
             _calendarContext.SaveChanges();
         }
-        public void EditSchedulerItem(int eventType, string recurring,DateTime dt,Models.SchedulerItem schedulerItem)
-        {
-            var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == dt).FirstOrDefault();
-            var eventId = _calendarContext.Events.Where(x => x.Type == eventType && x.Recurring.RecurringType == recurring).Select(x=>x.Id).FirstOrDefault();
-            var schedulerId = _calendarContext.Schedulers.Where(x=>x.EventId == eventId).Select(x=>x.Id).FirstOrDefault(); // dodat za persona uvjet
 
-            schedulerItem.Date = dt;
-            var dbSchedulerItem = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
-            _calendarContext.SchedulerItems.Update(dbSchedulerItem);
-            _calendarContext.SaveChanges();
-        }
-
-        public void EditPersonEvent(Guid personId,int eventType, string recurring, DateTime dt, Models.SchedulerItem schedulerItem)
-        {
-            var calendarItem = _calendarContext.CalendarItems.Where(x => x.Date == schedulerItem.Date).FirstOrDefault();
-            var eventId = _calendarContext.Events.Where(x => x.Type == eventType && x.Recurring.RecurringType == recurring).Select(x => x.Id).FirstOrDefault();
-            var schedulerId = _calendarContext.Schedulers.Where(x => x.EventId == eventId && x.PersonId == personId).Select(x => x.Id).FirstOrDefault(); // dodat za persona uvjet
-
-            //schedulerItem.Date = dt;
-            var dbSchedulerItem = SchedulerItemsMapper.ToDatabase(schedulerId, calendarItem.Id, schedulerItem);
-            _calendarContext.SchedulerItems.Update(dbSchedulerItem);
-            _calendarContext.SaveChanges();
-        }
-
-        //public void Edit(Models.SchedulerItem schedulerItem)
-        //{
-        //    var dbSchedulerItem = SchedulerItemsMapper.ToDatabase(schedulerItem);
-        //    _calendarContext.SchedulerItems.Update(dbSchedulerItem);
-        //    _calendarContext.SaveChanges();
-        //}
         public void DeleteSchedulerItem(List<Guid> ids)
         {
             List<SchedulerItem> schedulerItems = new List<SchedulerItem>();

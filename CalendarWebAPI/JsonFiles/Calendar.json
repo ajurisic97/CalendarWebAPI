@@ -1,4 +1,3 @@
-//Creating Master calendar (or someother). CalendarItems fill with POST request (for each date between Start and End date)
 [
   {
     "Id": "2f3def82-6537-4ac5-9d03-17963c4913e4",
