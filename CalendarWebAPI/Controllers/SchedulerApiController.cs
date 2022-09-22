@@ -80,10 +80,12 @@ namespace CalendarWebAPI.Controllers
 
             _schedulerService.EditOnSaveChanges(rsi);
         }
-        [HttpDelete("ids")]
-        public void Delete([FromQuery] List<Guid> ids)
+        [HttpDelete("{ids}")]
+        public void Delete(string ids)
         {
-            _schedulerService.Delete(ids);
+            var newIds = ids.Split(" ").Select(s => Guid.Parse(s)).ToList(); 
+            
+            _schedulerService.Delete(newIds);
         }
 
         [HttpPost]
