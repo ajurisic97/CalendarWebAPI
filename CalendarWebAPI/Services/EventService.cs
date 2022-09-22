@@ -15,5 +15,15 @@ namespace CalendarWebAPI.Services
         {
             return _eventRepository.GetEvents();
         }
+        //JUST for adding uncomment
+        /*EventRepository eventRepository = new EventRepository(_dbContext);
+        eventRepository.AddEventsAndRecurrings();
+        eventRepository.AddPerson();*/
+
+        public void AddEventsRecurringsAndPeople()
+        {
+            _eventRepository.AddEventsAndRecurrings();
+            _eventRepository.AddPerson(); 
+        }
     }
 }

@@ -20,5 +20,14 @@ namespace CalendarWebAPI.Controllers
         {
             return _eventService.GetAll().ToList();
         }
+
+
+        //Uncomment to reset(remove) all recurrings, events and person and new ones from json files
+        //[HttpPost]
+        //public ActionResult<object> PostERP()
+        //{
+        //    _eventService.AddEventsRecurringsAndPeople();
+        //    return Ok();
+        //}
     }
 }

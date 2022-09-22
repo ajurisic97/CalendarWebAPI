@@ -1,21 +1,21 @@
 [
   {
     "Id": "ded8301e-72f1-4006-9321-ab1097af3e15",
-    "ReccuringType": "None",
+    "RecurringType": "None",
     "Separation": 0,
-    "NumOfOccurrences": 0
+    "Gap": 0
   },
   {
     "Id": "d1ecf616-0aee-410b-81fb-5a8a23517484",
-    "ReccuringType": "Daily",
+    "RecurringType": "Daily",
     "Separation": 0,
-    "NumOfOccurrences": 1
+    "Gap": 1
   },
   {
     "Id": "4402e7a2-aeb8-4202-9d3a-4fc5c804967c",
-    "ReccuringType": "Weekly",
+    "RecurringType": "Weekly",
     "Separation": 0,
-    "NumOfOccurrences": 7
+    "Gap": 7
   }
 
 ]
