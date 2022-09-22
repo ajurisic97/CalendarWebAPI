@@ -81,19 +81,6 @@ namespace CalendarWebAPI.Repositories
                 var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
                 dbScheduler.Id = Guid.NewGuid();
                 schedulerItems.Add(dbScheduler);
-                if (occ != null && occ != 0)
-                {
-                    while (currentDate.AddDays(occ.Value) <= EndDate)
-                    {
-                        currentDate = currentDate.AddDays(occ.Value);
-                        calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(currentDate, currentDate).FirstOrDefault();
-                        if ((bool)calendarItem.IsWorkingday)
-                        {
-                            dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
-                            schedulerItems.Add(dbScheduler);
-                        }
-                    }
-                }
             }
             _calendarContext.SchedulerItems.AddRange(schedulerItems);
             _calendarContext.SaveChanges();
