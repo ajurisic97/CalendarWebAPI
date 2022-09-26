@@ -8,7 +8,8 @@
         public int DayType;
         public TimeSpan? StartTime;
         public TimeSpan? EndTime;
-        public PersonCalendar(Guid id, DateTime? date, decimal coef, int dayType, TimeSpan? startTime, TimeSpan? endTime)
+        public string Description;
+        public PersonCalendar(Guid id, DateTime? date, decimal coef, int dayType, TimeSpan? startTime, TimeSpan? endTime, string description)
         {
             Id = id;
             Date = date;
@@ -16,6 +17,7 @@
             DayType = dayType;
             StartTime = startTime;
             EndTime = endTime;
+            Description = description;
         }
     }
 }

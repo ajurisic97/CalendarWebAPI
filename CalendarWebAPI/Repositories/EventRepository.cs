@@ -60,7 +60,8 @@ namespace CalendarWebAPI.Repositories
                         Coefficient=e.Coefficient,
                         Name=e.Name,
                         Type=e.Type,
-                        RecurringId=recurring.Id
+                        RecurringId=recurring.Id,
+                        Description =e.Description
 
                     };
                     

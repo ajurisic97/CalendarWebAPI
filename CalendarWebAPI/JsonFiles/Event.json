@@ -4,6 +4,7 @@
     "Name": "Regular",
     "Type": 1,
     "Coefficient": 1.0,
+    "Description": "Regular working hour",
     "RecurringId": "ded8301e-72f1-4006-9321-ab1097af3e15"
   },
   {
@@ -11,6 +12,7 @@
     "Name": "Vacation",
     "Type": 10,
     "Coefficient": 1.0,
+    "Description": "Vacation event",
     "RecurringId": "ded8301e-72f1-4006-9321-ab1097af3e15"
   },
   {
@@ -18,6 +20,7 @@
     "Name": "SickDay",
     "Type": 11,
     "Coefficient": 0.7,
+    "Description": "SickDay event",
     "RecurringId": "ded8301e-72f1-4006-9321-ab1097af3e15"
   }
 

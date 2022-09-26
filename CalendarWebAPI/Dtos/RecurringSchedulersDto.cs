@@ -27,7 +27,8 @@ namespace CalendarWebAPI.Dtos
                 {
                     schedulerItemsId = json["eventId"].ToObject<Guid>();
                 }
-                var schedulerItem = new SchedulerItem(schedulerItemsId, startTime, endTime, date);
+                var description = json["Description"].ToObject<string>();
+                var schedulerItem = new SchedulerItem(schedulerItemsId, startTime, endTime, date,description);
                 var typeOfRecurring = json["Recurring"].ToObject<string>();
                 var scheduler = new RecurringSchedulerItems(personId, eventType, schedulerItem, typeOfRecurring, endDate);
                 items.Add(scheduler);

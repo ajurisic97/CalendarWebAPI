@@ -10,6 +10,7 @@ namespace CalendarWebAPI.DbModels
         public Guid CalendarItemsId { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
+        public string? Description { get; set; }
 
         public virtual CalendarItem CalendarItems { get; set; } = null!;
         public virtual Scheduler Scheduler { get; set; } = null!;

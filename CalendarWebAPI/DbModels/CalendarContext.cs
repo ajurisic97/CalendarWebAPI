@@ -202,6 +202,8 @@ namespace CalendarWebAPI.DbModels
                     .HasColumnType("decimal(5, 2)")
                     .HasDefaultValueSql("((1.0))");
 
+                entity.Property(e => e.Description).HasMaxLength(255);
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .HasDefaultValueSql("('Redovan rad')");
@@ -328,6 +330,8 @@ namespace CalendarWebAPI.DbModels
                 entity.ToTable("SchedulerItems", "Person");
 
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Description).HasMaxLength(255);
 
                 entity.HasOne(d => d.CalendarItems)
                     .WithMany(p => p.SchedulerItems)

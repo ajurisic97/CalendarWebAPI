@@ -7,12 +7,15 @@
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
 
-        public SchedulerItem(Guid? id,TimeSpan? startTime, TimeSpan? endTime, DateTime date)
+        public string? Description { get; set; }
+
+        public SchedulerItem(Guid? id,TimeSpan? startTime, TimeSpan? endTime, DateTime date, string? description)
         {
             Id = id;
             StartTime = startTime;
             EndTime = endTime;
             Date = date;
+            Description = description;
         }
     }
 }
