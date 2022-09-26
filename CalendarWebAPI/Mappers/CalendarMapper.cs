@@ -15,10 +15,11 @@ namespace CalendarWebAPI.Mappers
 
         public static DbModels.Calendar ToDatabase(Calendar calendar)
         {
+            
             return new DbModels.Calendar
             {
                 Id = calendar.Id.Value,
-                ParentId = calendar.Paent.Id,
+                ParentId = ( calendar.Parent == null) ? null : calendar.Parent.Id ,
                 CreatorId = calendar.Creator.Id,
                 Year = calendar.Year, Description = calendar.Description,
                 StartDate = calendar.StartDate, EndDate = calendar.EndDate, CreatedDate = calendar.CreatedDate,

@@ -3,6 +3,7 @@ using CalendarWebAPI.Repositories;
 using CalendarWebAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Converters;
+using CalendarWebAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,7 @@ builder.Services.AddDbContext<CalendarContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,7 +52,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("CORSPolicy");
 app.UseAuthorization();
-
+AppDbInitializer.Seed(app);
 app.MapControllers();
 
 app.Run();

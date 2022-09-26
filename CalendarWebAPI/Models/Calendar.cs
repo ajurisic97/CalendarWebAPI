@@ -10,7 +10,7 @@ namespace CalendarWebAPI.Models
     {
         public Guid? Id { get; set; }
         public Creator Creator { get; set; }
-        public Calendar Paent { get; set; }
+        public Calendar? Parent { get; set; }
         public int Year { get; set; }
 
         public string Description { get; set; }
@@ -24,10 +24,10 @@ namespace CalendarWebAPI.Models
         [Timestamp]
         public byte[]? RowVersion { get; set; }
 
-        public Calendar(Guid? id, Calendar parent, Creator creator, int year, string description, DateTime? startDate, DateTime? endDate, DateTime? createdDate, bool? isApproved)
+        public Calendar(Guid? id, Calendar? parent, Creator creator, int year, string description, DateTime? startDate, DateTime? endDate, DateTime? createdDate, bool? isApproved)
         {
             Id = id;
-            Paent = parent;
+            Parent = parent;
             Creator = creator;
             Year = year;
             Description = description;
