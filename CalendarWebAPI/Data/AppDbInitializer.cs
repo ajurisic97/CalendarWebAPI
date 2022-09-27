@@ -13,7 +13,7 @@ namespace CalendarWebAPI.Data
             {
                 var context = serviceScope.ServiceProvider.GetService<CalendarContext>();
                 context.Database.EnsureCreated();
-                // Uncomment 5 Lines before to remove all, start program, stop program, comment 5 lines back to reset all data
+                // Uncomment 5 Lines before to remove all data (5 tables), start program, stop program, comment 5 lines back to reset all data
                 //context.SchedulerItems.RemoveRange(context.SchedulerItems);
                 //context.Schedulers.RemoveRange(context.Schedulers);
                 //context.Recurrings.RemoveRange(context.Recurrings);
@@ -63,7 +63,79 @@ namespace CalendarWebAPI.Data
                                     Name = "Regular",
                                     Type = 1,
                                     Coefficient= Decimal.Parse("1,0"),
-                                    Description= "Regular working hour",
+                                    Description= "Regular work",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Overtime",
+                                    Type = 2,
+                                    Coefficient= Decimal.Parse("1,5"),
+                                    Description= "Overtime work",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Work at night",
+                                    Type = 3,
+                                    Coefficient= Decimal.Parse("1,5"),
+                                    Description= "Work at night",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Work on Sundays",
+                                    Type = 4,
+                                    Coefficient= Decimal.Parse("1,5"),
+                                    Description= "Work on Sundays",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Work on holidays",
+                                    Type = 5,
+                                    Coefficient= Decimal.Parse("1,5"),
+                                    Description= "Work on holidays",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Business trip",
+                                    Type = 6,
+                                    Coefficient= Decimal.Parse("1,5"),
+                                    Description= "Business trip hours",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Field work",
+                                    Type = 7,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Field work hours",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Standby",
+                                    Type = 8,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Standby hours",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "On call",
+                                    Type = 9,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Working hours on call",
                                     RecurringId= recurringId
                             },
                             new Event()
@@ -72,16 +144,97 @@ namespace CalendarWebAPI.Data
                                     Name = "Vacation",
                                     Type = 10,
                                     Coefficient= Decimal.Parse("1,0"),
-                                    Description= "Vacation event",
+                                    Description= "Hours of vacation time",
                                     RecurringId= recurringId
                             },
                             new Event()
                             {
                                     Id = Guid.NewGuid(),
-                                    Name = "SickDay",
+                                    Name = "SickDay (company)",
                                     Type = 11,
                                     Coefficient= Decimal.Parse("0,7"),
-                                    Description= "SickDay event",
+                                    Description= "Hours of sick leave at the expense of the company",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "SickDay (Fund)",
+                                    Type = 12,
+                                    Coefficient= Decimal.Parse("0,7"),
+                                    Description= "Hours of sick leave at the expense of the Fund",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Maternity (<6 month)",
+                                    Type = 13,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Maternity leave for the first 6 months",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Maternity (>6 month)",
+                                    Type = 14,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Maternity leave after 6 months",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Paid vacation",
+                                    Type = 15,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Hours of paid vacation",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Unpaid leave",
+                                    Type = 16,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Hours of unpaid leave",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Absence",
+                                    Type = 17,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Absence during the daily working time schedule, approved or not approved by the employer",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Strike",
+                                    Type = 18,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Hours spent on strike",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Exclusion",
+                                    Type = 19,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Exclusion from work",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Downtime, interruption of work, etc.",
+                                    Type = 20,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Hours of downtime, work stoppages, etc. That occurred through the fault of the employer or due to circumstances for which the employee is not responsible",
                                     RecurringId= recurringId
                             }
                         });

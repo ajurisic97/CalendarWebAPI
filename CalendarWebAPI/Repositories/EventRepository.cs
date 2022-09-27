@@ -17,8 +17,40 @@ namespace CalendarWebAPI.Repositories
         {
             return _dbContext.Events.Select(x => EventMapper.FromDatabase(x));
         }
+        public Models.Event Add(string eventName, string eventDescription)
+        {
+            var dbRecurrings = _dbContext.Recurrings.Select(x => x.Id).ToList();
+            var counter = _dbContext.Events.Max(x => x.Type);
+            counter+= 1;
+            List<Event> events = new List<Event>();
+            foreach(var dbRec in dbRecurrings)
+            {
+                Event dbEvent = new Event
+                {
+                    Id = Guid.NewGuid(),
+                    RecurringId = dbRec,
+                    Name = eventName,
+                    Description = eventDescription,
+                    Type = counter,
+                    Coefficient = Decimal.Parse("1,0")
 
-        
+                };
+                events.Add(dbEvent);
+
+            }
+            _dbContext.Events.AddRange(events);
+            _dbContext.SaveChanges();
+            var result = _dbContext.Events.Where(x => x.Name == eventName).FirstOrDefault();
+            return EventMapper.FromDatabase(result);
+        }
+
+        public void Delete(int eventType)
+        {
+            var events = _dbContext.Events.Where(x => x.Type.Equals(eventType));
+            _dbContext.Events.RemoveRange(events);
+            _dbContext.SaveChanges();
+        }
+
         //public void AddRecurrings()
         //{
         //    _dbContext.SchedulerItems.RemoveRange(_dbContext.SchedulerItems);
@@ -33,7 +65,7 @@ namespace CalendarWebAPI.Repositories
         //    }
         //    _dbContext.Recurrings.AddRange(listRecurrings);
         //    _dbContext.SaveChanges();
-            
+
         //}
         //public void AddEventsAndRecurrings()
         //{
@@ -64,19 +96,19 @@ namespace CalendarWebAPI.Repositories
         //                Description =e.Description
 
         //            };
-                    
+
         //            eventsAdd.Add(ev);
         //        }
         //    }
-            
+
         //    _dbContext.Events.AddRange(eventsAdd);
         //    _dbContext.SaveChanges();
-            
+
         //}
 
         //public void AddPerson()
         //{
-            
+
         //    _dbContext.SchedulerItems.RemoveRange(_dbContext.SchedulerItems);
         //    _dbContext.Schedulers.RemoveRange(_dbContext.Schedulers);
         //    _dbContext.People.RemoveRange(_dbContext.People);

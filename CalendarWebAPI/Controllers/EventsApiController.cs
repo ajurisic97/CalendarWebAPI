@@ -20,7 +20,17 @@ namespace CalendarWebAPI.Controllers
         {
             return _eventService.GetAll().ToList();
         }
+        [HttpPost]
+        public ActionResult<Event> Add(string eventName,string eventDescription)
+        {
+            return _eventService.Add(eventName,eventDescription);
+        }
 
+        [HttpDelete]
+        public void Delete(int eventType)
+        {
+            _eventService.Delete(eventType);
+        }
 
         //Uncomment to reset(remove) all recurrings, events and person and new ones from json files
         //[HttpPost]

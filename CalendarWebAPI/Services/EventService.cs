@@ -15,6 +15,14 @@ namespace CalendarWebAPI.Services
         {
             return _eventRepository.GetEvents();
         }
+        public Event Add(string eventName,string eventDescription)
+        {
+            return _eventRepository.Add(eventName,eventDescription);
+        }
+        public void Delete(int eventType)
+        {
+            _eventRepository.Delete(eventType);
+        }
         //JUST for adding uncomment
         /*EventRepository eventRepository = new EventRepository(_dbContext);
         eventRepository.AddEventsAndRecurrings();
