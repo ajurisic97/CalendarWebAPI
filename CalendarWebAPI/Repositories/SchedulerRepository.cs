@@ -80,16 +80,26 @@ namespace CalendarWebAPI.Repositories
         {
             List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
             foreach (Models.RecurringSchedulerItems rsi in listSchedulers){
+                var eventType = rsi.EventType;
+                var typeOfRecurring = rsi.TypeOfRecurring;
+                var recurring = _calendarContext.Recurrings.Where(r => r.RecurringType == typeOfRecurring).FirstOrDefault();
+
+                var ev = typeOfRecurring == null ? _calendarContext.Events.Where(e => e.Type.Equals(eventType)).FirstOrDefault()
+                                                      : _calendarContext.Events.Where(e => e.RecurringId.Equals(recurring.Id) && e.Type.Equals(eventType)).FirstOrDefault();
+                if (rsi.SchedulerItem.Description.Trim().Length == 0)
+                {
+                    rsi.SchedulerItem.Description = ev.Description;
+                }
                 var schedulerItem = rsi.SchedulerItem;
                 var dt = schedulerItem.Date;
-                var typeOfRecurring = rsi.TypeOfRecurring;
-                var eventType = rsi.EventType;
+                
+                
                 var personId = rsi.PersonId;
                 var calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
-                var recurring = _calendarContext.Recurrings.Where(r => r.RecurringType == typeOfRecurring).FirstOrDefault();
-                var eventId = typeOfRecurring == null ? _calendarContext.Events.Where(e => e.Type.Equals(eventType)).FirstOrDefault().Id
-                                                      : _calendarContext.Events.Where(e => e.RecurringId.Equals(recurring.Id) && e.Type.Equals(eventType)).FirstOrDefault().Id;
+                
 
+                var eventId = ev.Id;
+                
                 var schedulerId = _calendarContext.Schedulers.Where(s => s.PersonId.Equals(personId) && s.EventId.Equals(eventId)).Select(s => s.Id).FirstOrDefault();                
                 var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
                 dbScheduler.Id = Guid.NewGuid();
