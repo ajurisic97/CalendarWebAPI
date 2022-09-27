@@ -39,6 +39,22 @@ namespace CalendarWebAPI.Repositories
 
             }
             _dbContext.Events.AddRange(events);
+            List<Scheduler> schedulers = new List<Scheduler>();
+            var listPeople = _dbContext.People.ToList();
+            foreach (var e in events)
+            {
+                foreach (var p in listPeople)
+                {
+                    Scheduler sched = new Scheduler()
+                    {
+                        Id = new Guid(),
+                        EventId = e.Id,
+                        PersonId = p.Id
+                    };
+                    schedulers.Add(sched);
+                }
+            }
+            _dbContext.Schedulers.AddRange(schedulers);
             _dbContext.SaveChanges();
             var result = _dbContext.Events.Where(x => x.Name == eventName).FirstOrDefault();
             return EventMapper.FromDatabase(result);
@@ -46,7 +62,11 @@ namespace CalendarWebAPI.Repositories
 
         public void Delete(int eventType)
         {
-            var events = _dbContext.Events.Where(x => x.Type.Equals(eventType));
+            var events = _dbContext.Events.Where(x => x.Type.Equals(eventType)).ToList();
+            var scheduler = _dbContext.Schedulers.Where(x => events.Contains(x.Event)).ToList();
+            var schedulerItems = _dbContext.SchedulerItems.Where(x => scheduler.Contains(x.Scheduler));
+            _dbContext.SchedulerItems.RemoveRange(schedulerItems);
+            _dbContext.Schedulers.RemoveRange(scheduler);
             _dbContext.Events.RemoveRange(events);
             _dbContext.SaveChanges();
         }
