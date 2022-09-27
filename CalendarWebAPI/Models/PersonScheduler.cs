@@ -11,4 +11,16 @@
             PersonCalendar = calendars;
         }
     }
+
+    public class PersonPayRollScheduler
+    {
+        public Guid Id { get; set; }
+        public List<PersonCalendarPayRoll> PersonCalendarPayRoll { get; set; }
+
+        public PersonPayRollScheduler(Guid personId, List<PersonCalendarPayRoll> calendars)
+        {
+            Id = personId;
+            PersonCalendarPayRoll = calendars;
+        }
+    }
 }

@@ -47,7 +47,7 @@ namespace CalendarWebAPI.Data
                         },
                     });
                 }
-                context.SaveChanges();
+                context.SaveChanges(); // so events can be added
                 //Events:
                 var allRecurrings = context.Recurrings.Select(x => x.Id);
                 if (!context.Events.Any())
@@ -87,7 +87,7 @@ namespace CalendarWebAPI.Data
                         });
                     }
                 }
-
+                context.SaveChanges();
                 //WorkingDays
                 if (!context.WorkingDays.Any())
                 {

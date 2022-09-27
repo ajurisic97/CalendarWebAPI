@@ -20,13 +20,13 @@ namespace CalendarWebAPI.Controllers
 
 
         [HttpGet("guids")]
-        public ActionResult<List<PersonScheduler>> GetPersonCalendar(DateTime dt, DateTime dt2, [FromQuery] List<Guid> guids)
+        public ActionResult<List<PersonScheduler>> GetPersonCalendar(DateTime dt, DateTime dt2, bool forScheduler, [FromQuery] List<Guid> guids)
         {
             if (!guids.Any() || guids.All(xx => Guid.Empty == xx))
                 return NotFound();
 
             
-            return Ok(_schedulerService.GetPersonCalendars(guids, dt, dt2).ToList());
+            return Ok(_schedulerService.GetPersonCalendars(guids, dt, dt2,forScheduler).ToList());
         }
 
         

@@ -20,4 +20,20 @@
             Description = description;
         }
     }
+
+    public class PersonCalendarPayRoll
+    {
+        public Guid Id { get; set; }
+        public DateTime? Date;
+        public decimal Coef;
+        public int DayType;
+        
+        public PersonCalendarPayRoll(Guid id, DateTime? date, decimal coef, int dayType)
+        {
+            Id = id;
+            Date = date;
+            Coef = coef;
+            DayType = dayType;
+        }
+    }
 }

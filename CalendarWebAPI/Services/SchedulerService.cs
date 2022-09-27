@@ -11,9 +11,9 @@ namespace CalendarWebAPI.Services
         {
             _schedulerRepository = schedulerRepository;
         }
-        public IEnumerable<PersonScheduler> GetPersonCalendars(List<Guid> personId, DateTime dt, DateTime dt2)
+        public IEnumerable<object> GetPersonCalendars(List<Guid> personId, DateTime dt, DateTime dt2, bool forScheduler)
         {
-            return _schedulerRepository.GetPersonCalendar(personId, dt, dt2);
+            return _schedulerRepository.GetPersonCalendar(personId, dt, dt2, forScheduler);
         }
 
         public void AddOnSaveChanges(List<Models.RecurringSchedulerItems> recurringSchedulerItems)

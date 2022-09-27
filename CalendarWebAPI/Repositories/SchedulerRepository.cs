@@ -34,27 +34,46 @@ namespace CalendarWebAPI.Repositories
             return result;
         }
 
-        public IEnumerable<Models.PersonScheduler> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2)
+        public IEnumerable<object> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2, bool forScheduler)
         {
             List<Models.PersonScheduler> personSchedulers = new List<Models.PersonScheduler>();
+            List<Models.PersonPayRollScheduler> personPayRollSchedulers = new List<Models.PersonPayRollScheduler>();
+
             if (dt2 == DateTime.MinValue)
             {
                 dt2 = DateTime.MaxValue;
             }
             foreach (var personId in personIds)
             {
-                //za ivana dodati u where uvjet && x.Scheduler.Event.Type != 1
-                var schedulerItems = _calendarContext.SchedulerItems.Include(x => x.CalendarItems)
+                if (forScheduler)
+                {
+                    var schedulerItems = _calendarContext.SchedulerItems.Include(x => x.CalendarItems)
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Recurring)
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Person)
-                                                                    .Where(x => x.Scheduler.PersonId == personId  
-                                                                    && x.CalendarItems.Date>=dt && x.CalendarItems.Date<=dt2)
+                                                                    .Where(x => x.Scheduler.PersonId == personId
+                                                                    && x.CalendarItems.Date >= dt && x.CalendarItems.Date <= dt2)
                                                                     .Select(x => SchedulerItemsMapper.ToPersonCalendar(x));
+                    personSchedulers.Add(new Models.PersonScheduler(personId, schedulerItems.ToList()));
+                }
+                else
+                {
+                    // if it is for payroll project we have filter by type as well and we dont need some properties (like Description) for payroll models
+                    var schedulerItems = _calendarContext.SchedulerItems.Include(x => x.CalendarItems)
+                                                                    .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Recurring)
+                                                                    .Include(x => x.Scheduler).ThenInclude(x => x.Person)
+                                                                    .Where(x => x.Scheduler.PersonId == personId
+                                                                    && x.CalendarItems.Date >= dt && x.CalendarItems.Date <= dt2 && x.Scheduler.Event.Type!=1)
+                                                                    .Select(x => SchedulerItemsMapper.ToPersonCalendarPayRoll(x));
+                    personPayRollSchedulers.Add(new Models.PersonPayRollScheduler(personId, schedulerItems.ToList()));
+                }
                 
                                                                     
-                personSchedulers.Add(new Models.PersonScheduler(personId,schedulerItems.ToList()));
+                
             }
-            return personSchedulers;
+            if (forScheduler)
+                return personSchedulers;
+            else
+                return personPayRollSchedulers;
         }
 
         public void AddOnSaveChanges(List<Models.RecurringSchedulerItems> listSchedulers)
@@ -66,18 +85,12 @@ namespace CalendarWebAPI.Repositories
                 var typeOfRecurring = rsi.TypeOfRecurring;
                 var eventType = rsi.EventType;
                 var personId = rsi.PersonId;
-                var EndDate = rsi.EndDate;
                 var calendarItem = _calendarItemsRepository.GetCalendarItemsWithSubCulendar(dt, dt).FirstOrDefault();
                 var recurring = _calendarContext.Recurrings.Where(r => r.RecurringType == typeOfRecurring).FirstOrDefault();
                 var eventId = typeOfRecurring == null ? _calendarContext.Events.Where(e => e.Type.Equals(eventType)).FirstOrDefault().Id
                                                       : _calendarContext.Events.Where(e => e.RecurringId.Equals(recurring.Id) && e.Type.Equals(eventType)).FirstOrDefault().Id;
 
-                var schedulerId = _calendarContext.Schedulers.Where(s => s.PersonId.Equals(personId) && s.EventId.Equals(eventId)).Select(s => s.Id).FirstOrDefault();
-                var currentDate = dt;
-                var occ = typeOfRecurring != null ? recurring.Gap
-                                                 : null;
-
-                
+                var schedulerId = _calendarContext.Schedulers.Where(s => s.PersonId.Equals(personId) && s.EventId.Equals(eventId)).Select(s => s.Id).FirstOrDefault();                
                 var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
                 dbScheduler.Id = Guid.NewGuid();
                 schedulerItems.Add(dbScheduler);
