@@ -20,10 +20,10 @@ namespace CalendarWebAPI.Services
         eventRepository.AddEventsAndRecurrings();
         eventRepository.AddPerson();*/
 
-        public void AddEventsRecurringsAndPeople()
-        {
-            _eventRepository.AddEventsAndRecurrings();
-            _eventRepository.AddPerson(); 
-        }
+        //public void AddEventsRecurringsAndPeople()
+        //{
+        //    _eventRepository.AddEventsAndRecurrings();
+        //    _eventRepository.AddPerson(); 
+        //}
     }
 }

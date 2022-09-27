@@ -13,6 +13,12 @@ namespace CalendarWebAPI.Data
             {
                 var context = serviceScope.ServiceProvider.GetService<CalendarContext>();
                 context.Database.EnsureCreated();
+                // Uncomment 5 Lines before to remove all, start program, stop program, comment 5 lines back to reset all data
+                //context.SchedulerItems.RemoveRange(context.SchedulerItems);
+                //context.Schedulers.RemoveRange(context.Schedulers);
+                //context.Recurrings.RemoveRange(context.Recurrings);
+                //context.Events.RemoveRange(context.Events);
+                //context.People.RemoveRange(context.People);
                 //Recurrings:
                 if (!context.Recurrings.Any())
                 {
@@ -20,57 +26,66 @@ namespace CalendarWebAPI.Data
                     {
                         new Recurring
                         {
+                            Id = Guid.NewGuid(),
                             RecurringType="None",
                             Separation=0,
                             Gap = 0
                         },
                         new Recurring
                         {
+                            Id = Guid.NewGuid(),
                             RecurringType="Daily",
                             Separation=0,
                             Gap = 1
                         },
                         new Recurring
                         {
+                            Id = Guid.NewGuid(),
                             RecurringType="Weekly",
                             Separation=0,
                             Gap = 7
                         },
                     });
                 }
+                context.SaveChanges();
                 //Events:
+                var allRecurrings = context.Recurrings.Select(x => x.Id);
                 if (!context.Events.Any())
                 {
-                    context.Events.AddRange(new List<Event>()
+                    foreach (var recurringId in allRecurrings) //for every event we have recurring = none, daily, weekly...
                     {
-                        new Event()
+
+                        context.Events.AddRange(new List<Event>()
                         {
-                                Id = Guid.NewGuid(),
-                                Name = "Regular",
-                                Type = 1,
-                                Coefficient= decimal.Parse("1.0"),
-                                Description= "Regular working hour",
-                                RecurringId= Guid.Parse("ded8301e-72f1-4006-9321-ab1097af3e15")
-                        },
-                        new Event()
-                        {
-                                Id = Guid.NewGuid(),
-                                Name = "Vacation",
-                                Type = 10,
-                                Coefficient= decimal.Parse("1.0"),
-                                Description= "Vacation event",
-                                RecurringId= Guid.Parse("ded8301e-72f1-4006-9321-ab1097af3e15")
-                        },
-                        new Event()
-                        {
-                                Id = Guid.NewGuid(),
-                                Name = "SickDay",
-                                Type = 11,
-                                Coefficient= decimal.Parse("0.7"),
-                                Description= "SickDay event",
-                                RecurringId= Guid.Parse("ded8301e-72f1-4006-9321-ab1097af3e15")
-                        }
-                    });
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Regular",
+                                    Type = 1,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Regular working hour",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "Vacation",
+                                    Type = 10,
+                                    Coefficient= Decimal.Parse("1,0"),
+                                    Description= "Vacation event",
+                                    RecurringId= recurringId
+                            },
+                            new Event()
+                            {
+                                    Id = Guid.NewGuid(),
+                                    Name = "SickDay",
+                                    Type = 11,
+                                    Coefficient= Decimal.Parse("0,7"),
+                                    Description= "SickDay event",
+                                    RecurringId= recurringId
+                            }
+                        });
+                    }
                 }
 
                 //WorkingDays
@@ -208,31 +223,31 @@ namespace CalendarWebAPI.Data
                 //Shifts for test purposes - currently not in use
                 if (!context.Shifts.Any())
                 {
-                    context.Shifts.AddRange(new List<Shift>()
-                    {
-                        new DbModels.Shift()
-                        {
-                            Id = Guid.NewGuid(),
-                            CalendarItemId = Guid.Parse("8657DEE3-079A-4EA1-BEA4-01861CC2411F"),
-                            Description = "Sample data Shift 1",
-                            StartTime = DateTime.Today,
-                            EndTime = DateTime.Today,
-                            ShiftType = 1,
-                            IsActive = true
+                    //context.Shifts.AddRange(new List<Shift>()
+                    //{
+                    //    new DbModels.Shift()
+                    //    {
+                    //        Id = Guid.NewGuid(),
+                    //        CalendarItemId = Guid.Parse("8657DEE3-079A-4EA1-BEA4-01861CC2411F"),
+                    //        Description = "Sample data Shift 1",
+                    //        StartTime = DateTime.Today,
+                    //        EndTime = DateTime.Today,
+                    //        ShiftType = 1,
+                    //        IsActive = true
 
-                        },
-                        new DbModels.Shift()
-                        {
-                            Id = Guid.NewGuid(),
-                            CalendarItemId = Guid.Parse("8657DEE3-079A-4EA1-BEA4-01861CC2411F"),
-                            Description = "Sample data Shift 2",
-                            StartTime = DateTime.Today,
-                            EndTime = DateTime.Today,
-                            ShiftType = 2,
-                            IsActive = true
+                    //    },
+                    //    new DbModels.Shift()
+                    //    {
+                    //        Id = Guid.NewGuid(),
+                    //        CalendarItemId = Guid.Parse("8657DEE3-079A-4EA1-BEA4-01861CC2411F"),
+                    //        Description = "Sample data Shift 2",
+                    //        StartTime = DateTime.Today,
+                    //        EndTime = DateTime.Today,
+                    //        ShiftType = 2,
+                    //        IsActive = true
 
-                        },
-                    });
+                    //    },
+                    //});
                 }
                 context.SaveChanges();
 
