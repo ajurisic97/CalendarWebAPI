@@ -1,4 +1,5 @@
-﻿using CalendarWebAPI.DbModels;
+﻿using CalendarWebAPI.Countries;
+using CalendarWebAPI.DbModels;
 using CalendarWebAPI.Mappers;
 using CalendarWebAPI.Repositories;
 using System.Text.Json;
@@ -19,7 +20,7 @@ namespace CalendarWebAPI.Data
                 //context.Recurrings.RemoveRange(context.Recurrings);
                 //context.Events.RemoveRange(context.Events);
                 //context.People.RemoveRange(context.People);
-
+                //context.Holidays.RemoveRange(context.Holidays);
 
                 //Recurrings:
                 if (!context.Recurrings.Any())
@@ -320,12 +321,40 @@ namespace CalendarWebAPI.Data
                 {
                     //FILL CONFESSIONS
                 }
-                //Holidays to be added
+                //We add croatian holidays to table:
                 if (!context.Holidays.Any())
                 {
-                    // FILL holidays
-                }
+                    CroatianPublicHoliday croatianPublicHolidays = new();
+                    //IList<BaseClass.Holiday> holidays = croatianPublicHolidays.PublicHolidaysInformation(2022);
+                    IDictionary<DateTime, string> _croHolidays = croatianPublicHolidays.PublicHolidayNames(2022);
+                    List<Holiday> holidays = new List<Holiday>();
+                    foreach(var holiday in _croHolidays)
+                    {
+                        DateTime holidayDate = holiday.Key;
+                        string holidayName = holiday.Value;
+                        string strippedName = holiday.Value;
+                        if (strippedName.Length > 50)
+                        {
+                            strippedName = holidayName.Substring(0, 50);
+                        }
+                        Holiday h = new Holiday()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = strippedName,
+                            Description = holidayName,
+                            DateDay = holidayDate.Day.ToString(),
+                            DateMonth = holidayDate.Month.ToString(),
+                            IsCommon = true,
+                            IsPermanent = true,
+                            ConfessionId = Guid.Parse("B828F696-64BD-4034-83DD-8589638EFA36")
 
+                        };
+                        holidays.Add(h);
+                    }
+                    context.Holidays.AddRange(holidays);
+                    
+                }
+                context.SaveChanges();
                 // CALENDAR + CALENDARITEMS
                 if (!context.Calendars.Any())
                 {
@@ -405,6 +434,9 @@ namespace CalendarWebAPI.Data
                     //});
                 }
                 context.SaveChanges();
+
+                
+
 
             }
         }
