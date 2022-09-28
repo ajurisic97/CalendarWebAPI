@@ -19,6 +19,8 @@ namespace CalendarWebAPI.Data
                 //context.Recurrings.RemoveRange(context.Recurrings);
                 //context.Events.RemoveRange(context.Events);
                 //context.People.RemoveRange(context.People);
+
+
                 //Recurrings:
                 if (!context.Recurrings.Any())
                 {
