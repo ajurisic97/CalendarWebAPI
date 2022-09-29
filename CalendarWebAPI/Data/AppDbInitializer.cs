@@ -466,8 +466,8 @@ namespace CalendarWebAPI.Data
                             Id = Guid.NewGuid(),
                             CalendarItemId = item.Id,
                             Description = "Shift 1",
-                            StartTime=item.Date.Value.AddHours(8), // Moram izmjeniti property u bazi - u time only
-                            EndTime=item.Date.Value.AddHours(16), // Moram izmjeniti property u bazi - u time only
+                            StartTime=new TimeSpan(8,0,0), 
+                            EndTime=new TimeSpan(16,0,0), 
                             ShiftType =1,
                             IsActive=true,
                         };

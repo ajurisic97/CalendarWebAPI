@@ -205,7 +205,7 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.Description).HasMaxLength(255);
 
                 entity.Property(e => e.Name)
-                    .HasMaxLength(50)
+                    .HasMaxLength(255)
                     .HasDefaultValueSql("('Redovan rad')");
 
                 entity.Property(e => e.Type).HasDefaultValueSql("((1))");
@@ -239,7 +239,7 @@ namespace CalendarWebAPI.DbModels
 
                 entity.Property(e => e.IsPermanent).HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.Name).HasMaxLength(50);
+                entity.Property(e => e.Name).HasMaxLength(255);
 
                 entity.HasOne(d => d.Confession)
                     .WithMany(p => p.Holidays)
@@ -356,9 +356,9 @@ namespace CalendarWebAPI.DbModels
                     .HasMaxLength(255)
                     .IsFixedLength();
 
-                entity.Property(e => e.EndTime).HasColumnType("smalldatetime");
+                entity.Property(e => e.EndTime).HasColumnType("time(0)");
 
-                entity.Property(e => e.StartTime).HasColumnType("smalldatetime");
+                entity.Property(e => e.StartTime).HasColumnType("time(0)");
 
                 entity.HasOne(d => d.CalendarItem)
                     .WithMany(p => p.Shifts)

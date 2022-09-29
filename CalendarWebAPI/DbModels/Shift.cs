@@ -8,8 +8,8 @@ namespace CalendarWebAPI.DbModels
         public Guid Id { get; set; }
         public Guid CalendarItemId { get; set; }
         public string? Description { get; set; }
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
         public int? ShiftType { get; set; }
         public bool? IsActive { get; set; }
 
