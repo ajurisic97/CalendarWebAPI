@@ -22,6 +22,17 @@ namespace CalendarWebAPI.Data
                 //context.People.RemoveRange(context.People);
                 //context.Holidays.RemoveRange(context.Holidays);
 
+                if (!context.Creators.Any())
+                {
+                    Creator c = new Creator
+                    {
+                        Id = new Guid(),
+                        Name="Application"
+
+                    };
+                    context.Creators.Add(c);
+                    context.SaveChanges();
+                }
                 //Recurrings:
                 if (!context.Recurrings.Any())
                 {
@@ -319,7 +330,41 @@ namespace CalendarWebAPI.Data
                 // Confessions - maybe added
                 if (!context.Confessions.Any())
                 {
-                    //FILL CONFESSIONS
+                    context.Confessions.AddRange(new List<Confession>()
+                    {
+                        new Confession
+                        {
+                            Id = Guid.Parse("B828F696-64BD-4034-83DD-8589638EFA36"),
+                            Name="Kršćannska",
+                            Description="Prema Julijanskom kalendaru",
+                            IsDefault=true,
+                            IsActive=true,
+                        },
+                        new Confession
+                        {
+                            Id = Guid.NewGuid(),
+                            Name="Muslimanska",
+                            Description=null,
+                            IsDefault=false,
+                            IsActive=true,
+                        },
+                        new Confession
+                        {
+                            Id = Guid.NewGuid(),
+                            Name="Židovska",
+                            Description=null,
+                            IsDefault=false,
+                            IsActive=true,
+                        },
+                        new Confession
+                        {
+                            Id = Guid.NewGuid(),
+                            Name="Kršćannska",
+                            Description="Prema Gregorijanskom kalendaru",
+                            IsDefault=false,
+                            IsActive=true,
+                        },
+                    });
                 }
                 //We add croatian holidays to table:
                 if (!context.Holidays.Any())
@@ -360,8 +405,7 @@ namespace CalendarWebAPI.Data
                 {
                     List<Calendar> calendars = new List<Calendar>();
                     List<CalendarItem> dbCalendarItems = new List<CalendarItem>();
-                    Guid creatorId = Guid.Parse("ba4875f8-181e-41fb-ab72-3bc67c251ac7"); //Creator: application
-                    Creator creator = context.Creators.Where(x => x.Id == creatorId).FirstOrDefault();
+                    Creator creator = context.Creators.Where(x => x.Name=="Application").FirstOrDefault();
                     Models.Creator modelCreator = CreatorMapper.FromDatabase(creator);
                     CalendarItemsRepository calendarItemsRepository = new CalendarItemsRepository(context);
                     
@@ -402,36 +446,27 @@ namespace CalendarWebAPI.Data
                     context.CalendarItems.AddRange(dbCalendarItems);
 
                 }
-
+                context.SaveChanges(); // so we can read Id of calendarItems
 
                 //Shifts for test purposes - currently not in use
                 if (!context.Shifts.Any())
                 {
-                    //context.Shifts.AddRange(new List<Shift>()
-                    //{
-                    //    new DbModels.Shift()
-                    //    {
-                    //        Id = Guid.NewGuid(),
-                    //        CalendarItemId = Guid.Parse("8657DEE3-079A-4EA1-BEA4-01861CC2411F"),
-                    //        Description = "Sample data Shift 1",
-                    //        StartTime = DateTime.Today,
-                    //        EndTime = DateTime.Today,
-                    //        ShiftType = 1,
-                    //        IsActive = true
-
-                    //    },
-                    //    new DbModels.Shift()
-                    //    {
-                    //        Id = Guid.NewGuid(),
-                    //        CalendarItemId = Guid.Parse("8657DEE3-079A-4EA1-BEA4-01861CC2411F"),
-                    //        Description = "Sample data Shift 2",
-                    //        StartTime = DateTime.Today,
-                    //        EndTime = DateTime.Today,
-                    //        ShiftType = 2,
-                    //        IsActive = true
-
-                    //    },
-                    //});
+                    List<Shift> shifts = new List<Shift>();
+                    foreach(var item in context.CalendarItems)
+                    {
+                        Shift s = new Shift
+                        {
+                            Id = Guid.NewGuid(),
+                            CalendarItemId = item.Id,
+                            Description = "Shift 1",
+                            StartTime=item.Date.Value.AddHours(8), // Moram izmjeniti property u bazi - u time only
+                            EndTime=item.Date.Value.AddHours(16), // Moram izmjeniti property u bazi - u time only
+                            ShiftType =1,
+                            IsActive=true,
+                        };
+                        shifts.Add(s);
+                    }
+                    context.AddRange(shifts);
                 }
                 context.SaveChanges();
 
