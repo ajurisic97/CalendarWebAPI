@@ -14,13 +14,20 @@ namespace CalendarWebAPI.Data
             {
                 var context = serviceScope.ServiceProvider.GetService<CalendarContext>();
                 context.Database.EnsureCreated();
-                // Uncomment 5 Lines before to remove all data (5 tables), start program, stop program, comment 5 lines back to reset all data
+                // Uncomment lines below to remove all data from database, start program, stop program, comment them back to put in default data
+                //context.Confessions.RemoveRange(context.Confessions);
+                //context.Shifts.RemoveRange(context.Shifts);
                 //context.SchedulerItems.RemoveRange(context.SchedulerItems);
                 //context.Schedulers.RemoveRange(context.Schedulers);
                 //context.Recurrings.RemoveRange(context.Recurrings);
                 //context.Events.RemoveRange(context.Events);
                 //context.People.RemoveRange(context.People);
                 //context.Holidays.RemoveRange(context.Holidays);
+                //context.WorkingDays.RemoveRange(context.WorkingDays);
+                //context.CalendarItems.RemoveRange(context.CalendarItems);
+                //context.Calendar.RemoveRange(context.Calendar);
+                //context.Creators.RemoveRange(context.Creators);
+                //context.SaveChanges();
 
                 if (!context.Creators.Any())
                 {
