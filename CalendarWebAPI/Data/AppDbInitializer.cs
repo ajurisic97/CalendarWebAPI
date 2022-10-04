@@ -13,6 +13,7 @@ namespace CalendarWebAPI.Data
             using(var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<CalendarContext>();
+                
                 context.Database.EnsureCreated();
                 // Uncomment lines below to remove all data from database, start program, stop program, comment them back to put in default data
                 //context.Confessions.RemoveRange(context.Confessions);

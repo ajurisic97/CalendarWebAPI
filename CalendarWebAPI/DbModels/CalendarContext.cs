@@ -16,6 +16,7 @@ namespace CalendarWebAPI.DbModels
         {
         }
 
+        public virtual DbSet<Application> Applications { get; set; } = null!;
         public virtual DbSet<Calendar> Calendars { get; set; } = null!;
         public virtual DbSet<CalendarDate> CalendarDates { get; set; } = null!;
         public virtual DbSet<CalendarItem> CalendarItems { get; set; } = null!;
@@ -26,12 +27,14 @@ namespace CalendarWebAPI.DbModels
         public virtual DbSet<Person> People { get; set; } = null!;
         public virtual DbSet<PersonalIncome> PersonalIncomes { get; set; } = null!;
         public virtual DbSet<Recurring> Recurrings { get; set; } = null!;
+        public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Scheduler> Schedulers { get; set; } = null!;
         public virtual DbSet<SchedulerItem> SchedulerItems { get; set; } = null!;
         public virtual DbSet<Shift> Shifts { get; set; } = null!;
         public virtual DbSet<TaxGroup> TaxGroups { get; set; } = null!;
         public virtual DbSet<TaxInTaxGroup> TaxInTaxGroups { get; set; } = null!;
         public virtual DbSet<Taxis> Taxes { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<WorkingDay> WorkingDays { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -45,6 +48,32 @@ namespace CalendarWebAPI.DbModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Application>(entity =>
+            {
+                entity.ToTable("Applications", "Catalog");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Name).HasMaxLength(255);
+
+                entity.Property(e => e.ShortName).HasMaxLength(16);
+
+                entity.HasMany(d => d.Events)
+                    .WithMany(p => p.Applications)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "ApplicationEvent",
+                        l => l.HasOne<Event>().WithMany().HasForeignKey("EventId").HasConstraintName("FK_ApplicationEvent_Event"),
+                        r => r.HasOne<Application>().WithMany().HasForeignKey("ApplicationId").HasConstraintName("FK_ApplicationEvent_Application"),
+                        j =>
+                        {
+                            j.HasKey("ApplicationId", "EventId");
+
+                            j.ToTable("ApplicationEvents", "Catalog");
+
+                            j.HasIndex(new[] { "EventId" }, "IX_ApplicationEvents_EventId");
+                        });
+            });
+
             modelBuilder.Entity<Calendar>(entity =>
             {
                 entity.ToTable("Calendar", "Catalog");
@@ -306,6 +335,15 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.RecurringType).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.ToTable("Roles", "Catalog");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Name).HasMaxLength(255);
+            });
+
             modelBuilder.Entity<Scheduler>(entity =>
             {
                 entity.ToTable("Scheduler", "Person");
@@ -428,6 +466,34 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.Name).HasMaxLength(100);
 
                 entity.Property(e => e.Percent).HasColumnType("decimal(8, 6)");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("Users", "Catalog");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Email).HasMaxLength(255);
+
+                entity.Property(e => e.Password).HasMaxLength(255);
+
+                entity.Property(e => e.Username).HasMaxLength(255);
+
+                entity.HasMany(d => d.Roles)
+                    .WithMany(p => p.Users)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "UserRole",
+                        l => l.HasOne<Role>().WithMany().HasForeignKey("RoleId").HasConstraintName("FK_UserRole_Role"),
+                        r => r.HasOne<User>().WithMany().HasForeignKey("UserId").HasConstraintName("FK_UserRole_User"),
+                        j =>
+                        {
+                            j.HasKey("UserId", "RoleId");
+
+                            j.ToTable("UserRoles", "Catalog");
+
+                            j.HasIndex(new[] { "RoleId" }, "IX_UserRoles_RoleId");
+                        });
             });
 
             modelBuilder.Entity<WorkingDay>(entity =>
