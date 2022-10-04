@@ -34,7 +34,7 @@ namespace CalendarWebAPI.Repositories
             return result;
         }
 
-        public IEnumerable<object> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2, bool forScheduler)
+        public IEnumerable<object> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2, bool forScheduler,string appName)
         {
             List<Models.PersonScheduler> personSchedulers = new List<Models.PersonScheduler>();
             List<Models.PersonPayRollScheduler> personPayRollSchedulers = new List<Models.PersonPayRollScheduler>();
@@ -43,6 +43,7 @@ namespace CalendarWebAPI.Repositories
             {
                 dt2 = DateTime.MaxValue;
             }
+            var eventIds = _calendarContext.ApplicationEvents.Where(a => a.Application.Name == appName).Select(e => e.Id).ToList();
             foreach (var personId in personIds)
             {
                 if (forScheduler)
@@ -51,7 +52,7 @@ namespace CalendarWebAPI.Repositories
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Recurring)
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Person)
                                                                     .Where(x => x.Scheduler.PersonId == personId
-                                                                    && x.CalendarItems.Date >= dt && x.CalendarItems.Date <= dt2)
+                                                                    && x.CalendarItems.Date >= dt && x.CalendarItems.Date <= dt2 && eventIds.Contains(x.Scheduler.EventId))
                                                                     .Select(x => SchedulerItemsMapper.ToPersonCalendar(x));
                     personSchedulers.Add(new Models.PersonScheduler(personId, schedulerItems.ToList()));
                 }
@@ -62,7 +63,7 @@ namespace CalendarWebAPI.Repositories
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Recurring)
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Person)
                                                                     .Where(x => x.Scheduler.PersonId == personId
-                                                                    && x.CalendarItems.Date >= dt && x.CalendarItems.Date <= dt2 && x.Scheduler.Event.Type!=1)
+                                                                    && x.CalendarItems.Date >= dt && x.CalendarItems.Date <= dt2 && eventIds.Contains(x.Scheduler.EventId))
                                                                     .Select(x => SchedulerItemsMapper.ToPersonCalendarPayRoll(x));
                     personPayRollSchedulers.Add(new Models.PersonPayRollScheduler(personId, schedulerItems.ToList()));
                 }

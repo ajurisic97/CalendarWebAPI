@@ -13,9 +13,11 @@ namespace CalendarWebAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public IEnumerable<Models.Event> GetEvents(string applicationShortName="Scheduler")
+        public IEnumerable<Models.Event> GetEvents(string? applicationName="Scheduler")
         {
-            return _dbContext.Events.Select(x => EventMapper.FromDatabase(x));
+
+            var appEvents = _dbContext.ApplicationEvents.Where(x => x.Application.Name == applicationName).Select(ae=>ae.EventId);
+            return _dbContext.Events.Where(x=>appEvents.Contains(x.Id)).Select(x => EventMapper.FromDatabase(x));
         }
         public Models.Event Add(string eventName, string eventDescription)
         {

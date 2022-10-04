@@ -16,9 +16,9 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Event>> GetAll()
+        public ActionResult<List<Event>> GetAll(string? applicationName="Scheduler")
         {
-            return _eventService.GetAll().ToList();
+            return _eventService.GetAll(applicationName).ToList();
         }
         [HttpPost]
         public ActionResult<Event> Add(string eventName,string eventDescription)

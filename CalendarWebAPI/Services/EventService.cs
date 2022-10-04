@@ -11,9 +11,9 @@ namespace CalendarWebAPI.Services
             _eventRepository = eventRepository;
         }
 
-        public IEnumerable<Event> GetAll()
+        public IEnumerable<Event> GetAll(string? applicationName="Scheduler")
         {
-            return _eventRepository.GetEvents();
+            return _eventRepository.GetEvents(applicationName);
         }
         public Event Add(string eventName,string eventDescription)
         {

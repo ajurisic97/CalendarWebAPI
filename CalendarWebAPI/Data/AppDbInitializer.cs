@@ -13,7 +13,7 @@ namespace CalendarWebAPI.Data
             using(var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<CalendarContext>();
-
+                var dbEvents = context.Events;
                 //context.Users.Add(new User
                 //{
                 //    Roles.
@@ -76,7 +76,7 @@ namespace CalendarWebAPI.Data
                 context.SaveChanges(); // so events can be added
                 //Events:
                 var allRecurrings = context.Recurrings.Select(x => x.Id);
-                if (!context.Events.Any())
+                if (!dbEvents.Any())
                 {
                     foreach (var recurringId in allRecurrings) //for every event we have recurring = none, daily, weekly...
                     {
@@ -319,7 +319,7 @@ namespace CalendarWebAPI.Data
                         var peopleJson = r.ReadToEnd();
                         listPeople = JsonSerializer.Deserialize<List<Person>>(peopleJson);
                     }
-                    var events = context.Events.ToList();
+                    var events = dbEvents.ToList();
                     List<Scheduler> schedulers = new List<Scheduler>();
                     foreach (var e in events)
                     {
@@ -480,9 +480,94 @@ namespace CalendarWebAPI.Data
                     }
                     context.AddRange(shifts);
                 }
+
+                if (!context.Applications.Any())
+                {
+                    context.Applications.AddRange(new List<Application>()
+                    {
+                        new Application()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Scheduler",
+                            ShortName="SCHED"
+                        }
+                    });
+                }
+                context.SaveChanges();
+                var dbEventsIds = dbEvents.Select(x => x.Id).ToList();
+                if (!context.ApplicationEvents.Any())
+                {
+                    List<ApplicationEvent> appEvents = new List<ApplicationEvent>();
+                    var apps = context.Applications;
+                    foreach(var a in apps)
+                    {
+                        foreach(var e in dbEventsIds)
+                        {
+                            appEvents.Add(new ApplicationEvent() { Id = Guid.NewGuid(), ApplicationId = a.Id, EventId = e });
+                        }
+                    }
+                    context.ApplicationEvents.AddRange(appEvents);
+                }
+
+                if (!context.Roles.Any())
+                {
+                    context.Roles.AddRange(new List<Role>() {
+                        new Role()
+                        { 
+                            Id = Guid.NewGuid(),
+                            Name="Admin"
+                        },
+                        new Role()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name="User"
+                        }
+                    });
+                }
+                if (!context.Users.Any())
+                {
+                    context.Users.AddRange(new List<User>()
+                    {
+                        new User()
+                        {
+                            Id = Guid.NewGuid(),
+                            Username="Admin",
+                            Password="Admin",
+                            Email="admin@softly.hr"
+                        },
+                        new User()
+                        {
+                            Id = Guid.NewGuid(),
+                            Username="ajurisic",
+                            Password="ajurisic",
+                            Email="ajurisic@pmfst.hr"
+                        }
+                    });
+                }
                 context.SaveChanges();
 
-                
+                if (!context.UserRoles.Any())
+                {
+                    context.UserRoles.AddRange(new List<UserRole>()
+                    {
+                        new UserRole()
+                        {
+                            Id = Guid.NewGuid(),
+                            UserId = context.Users.Where(x=>x.Username=="Admin").Select(x=>x.Id).FirstOrDefault(),
+                            RoleId = context.Roles.Where(x=>x.Name=="Admin").Select(x=>x.Id).FirstOrDefault()
+                        },
+                        new UserRole()
+                        {
+                            Id = Guid.NewGuid(),
+                            UserId = context.Users.Where(x=>x.Username=="ajurisic").Select(x=>x.Id).FirstOrDefault(),
+                            RoleId = context.Roles.Where(x=>x.Name=="User").Select(x=>x.Id).FirstOrDefault()
+                        }
+                    });
+                }
+                context.SaveChanges();
+
+
+
 
 
             }
