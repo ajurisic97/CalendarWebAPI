@@ -17,6 +17,7 @@ namespace CalendarWebAPI.DbModels
         }
 
         public virtual DbSet<Application> Applications { get; set; } = null!;
+        public virtual DbSet<ApplicationEvent> ApplicationEvents { get; set; } = null!;
         public virtual DbSet<Calendar> Calendars { get; set; } = null!;
         public virtual DbSet<CalendarDate> CalendarDates { get; set; } = null!;
         public virtual DbSet<CalendarItem> CalendarItems { get; set; } = null!;
@@ -35,6 +36,7 @@ namespace CalendarWebAPI.DbModels
         public virtual DbSet<TaxInTaxGroup> TaxInTaxGroups { get; set; } = null!;
         public virtual DbSet<Taxis> Taxes { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
         public virtual DbSet<WorkingDay> WorkingDays { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -57,21 +59,23 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.Name).HasMaxLength(255);
 
                 entity.Property(e => e.ShortName).HasMaxLength(16);
+            });
 
-                entity.HasMany(d => d.Events)
-                    .WithMany(p => p.Applications)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "ApplicationEvent",
-                        l => l.HasOne<Event>().WithMany().HasForeignKey("EventId").HasConstraintName("FK_ApplicationEvent_Event"),
-                        r => r.HasOne<Application>().WithMany().HasForeignKey("ApplicationId").HasConstraintName("FK_ApplicationEvent_Application"),
-                        j =>
-                        {
-                            j.HasKey("ApplicationId", "EventId");
+            modelBuilder.Entity<ApplicationEvent>(entity =>
+            {
+                entity.ToTable("ApplicationEvents", "Catalog");
 
-                            j.ToTable("ApplicationEvents", "Catalog");
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-                            j.HasIndex(new[] { "EventId" }, "IX_ApplicationEvents_EventId");
-                        });
+                entity.HasOne(d => d.Application)
+                    .WithMany(p => p.ApplicationEvents)
+                    .HasForeignKey(d => d.ApplicationId)
+                    .HasConstraintName("FK_ApplicationEvent_Application");
+
+                entity.HasOne(d => d.Event)
+                    .WithMany(p => p.ApplicationEvents)
+                    .HasForeignKey(d => d.EventId)
+                    .HasConstraintName("FK_ApplicationEvent_Event");
             });
 
             modelBuilder.Entity<Calendar>(entity =>
@@ -479,21 +483,23 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.Password).HasMaxLength(255);
 
                 entity.Property(e => e.Username).HasMaxLength(255);
+            });
 
-                entity.HasMany(d => d.Roles)
-                    .WithMany(p => p.Users)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "UserRole",
-                        l => l.HasOne<Role>().WithMany().HasForeignKey("RoleId").HasConstraintName("FK_UserRole_Role"),
-                        r => r.HasOne<User>().WithMany().HasForeignKey("UserId").HasConstraintName("FK_UserRole_User"),
-                        j =>
-                        {
-                            j.HasKey("UserId", "RoleId");
+            modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.ToTable("UserRoles", "Catalog");
 
-                            j.ToTable("UserRoles", "Catalog");
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-                            j.HasIndex(new[] { "RoleId" }, "IX_UserRoles_RoleId");
-                        });
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.RoleId)
+                    .HasConstraintName("FK_UserRole_Role");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_UserRole_User");
             });
 
             modelBuilder.Entity<WorkingDay>(entity =>

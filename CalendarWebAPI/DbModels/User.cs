@@ -7,7 +7,7 @@ namespace CalendarWebAPI.DbModels
     {
         public User()
         {
-            Roles = new HashSet<Role>();
+            UserRoles = new HashSet<UserRole>();
         }
 
         public Guid Id { get; set; }
@@ -15,6 +15,6 @@ namespace CalendarWebAPI.DbModels
         public string Password { get; set; } = null!;
         public string Email { get; set; } = null!;
 
-        public virtual ICollection<Role> Roles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

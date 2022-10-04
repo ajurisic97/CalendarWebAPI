@@ -7,8 +7,8 @@ namespace CalendarWebAPI.DbModels
     {
         public Event()
         {
+            ApplicationEvents = new HashSet<ApplicationEvent>();
             Schedulers = new HashSet<Scheduler>();
-            Applications = new HashSet<Application>();
         }
 
         public Guid Id { get; set; }
@@ -19,8 +19,7 @@ namespace CalendarWebAPI.DbModels
         public string? Description { get; set; }
 
         public virtual Recurring Recurring { get; set; } = null!;
+        public virtual ICollection<ApplicationEvent> ApplicationEvents { get; set; }
         public virtual ICollection<Scheduler> Schedulers { get; set; }
-
-        public virtual ICollection<Application> Applications { get; set; }
     }
 }

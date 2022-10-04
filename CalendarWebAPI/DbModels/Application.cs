@@ -7,13 +7,13 @@ namespace CalendarWebAPI.DbModels
     {
         public Application()
         {
-            Events = new HashSet<Event>();
+            ApplicationEvents = new HashSet<ApplicationEvent>();
         }
 
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public string ShortName { get; set; } = null!;
 
-        public virtual ICollection<Event> Events { get; set; }
+        public virtual ICollection<ApplicationEvent> ApplicationEvents { get; set; }
     }
 }
