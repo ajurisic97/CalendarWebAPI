@@ -8,6 +8,7 @@ namespace CalendarWebAPI.DbModels
         public Person()
         {
             Schedulers = new HashSet<Scheduler>();
+            Users = new HashSet<User>();
         }
 
         public Guid Id { get; set; }
@@ -28,5 +29,6 @@ namespace CalendarWebAPI.DbModels
         public string? Description { get; set; }
 
         public virtual ICollection<Scheduler> Schedulers { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

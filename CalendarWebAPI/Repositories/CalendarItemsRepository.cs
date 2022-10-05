@@ -103,9 +103,10 @@ namespace CalendarWebAPI.Repositories
             var WeekDays = _dbContext.WorkingDays.Select(x=> new {x.Name, x.IsWorkingDay});
             var dict = new Dictionary<string, bool>();
             
-            var weekend = false;
+
             for (int i = 0; i <= rangeDates; i++)
             {
+                var weekend = false;
                 var currentDay = tempDate.ToString("dddd");
                 var workingDay = WeekDays.Where(x => x.Name == currentDay).Select(x=>x.IsWorkingDay).FirstOrDefault();
                 if(currentDay.Equals("Sunday") || currentDay.Equals("Saturday"))

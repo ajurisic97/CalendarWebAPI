@@ -483,6 +483,11 @@ namespace CalendarWebAPI.DbModels
                 entity.Property(e => e.Password).HasMaxLength(255);
 
                 entity.Property(e => e.Username).HasMaxLength(255);
+
+                entity.HasOne(d => d.Person)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.PersonId)
+                    .HasConstraintName("FK_Users_People");
             });
 
             modelBuilder.Entity<UserRole>(entity =>

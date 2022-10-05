@@ -14,12 +14,8 @@ namespace CalendarWebAPI.Data
             {
                 var context = serviceScope.ServiceProvider.GetService<CalendarContext>();
                 var dbEvents = context.Events;
-                //context.Users.Add(new User
-                //{
-                //    Roles.
-                //}) 
                 context.Database.EnsureCreated();
-                // Uncomment lines below to remove all data from database, start program, stop program, comment them back to put in default data
+                /* Uncomment lines below to remove all data from database, start program, stop program, comment them back to put in default data*/
                 //context.Confessions.RemoveRange(context.Confessions);
                 //context.Shifts.RemoveRange(context.Shifts);
                 //context.SchedulerItems.RemoveRange(context.SchedulerItems);
@@ -72,8 +68,9 @@ namespace CalendarWebAPI.Data
                             Gap = 7
                         },
                     });
+                    context.SaveChanges(); // so events can be added
                 }
-                context.SaveChanges(); // so events can be added
+                
                 //Events:
                 var allRecurrings = context.Recurrings.Select(x => x.Id);
                 if (!dbEvents.Any())
@@ -265,8 +262,9 @@ namespace CalendarWebAPI.Data
                             }
                         });
                     }
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
+                
                 //WorkingDays
                 if (!context.WorkingDays.Any())
                 {
@@ -308,6 +306,7 @@ namespace CalendarWebAPI.Data
                             IsWorkingDay = true
                         }
                     });
+                    context.SaveChanges();
                 }
                 //People:
                 if (!context.People.Any())
@@ -336,6 +335,7 @@ namespace CalendarWebAPI.Data
                     }
                     context.People.AddRange(listPeople);
                     context.Schedulers.AddRange(schedulers);
+                    context.SaveChanges();
                 }
 
 
@@ -377,6 +377,7 @@ namespace CalendarWebAPI.Data
                             IsActive=true,
                         },
                     });
+                    context.SaveChanges();
                 }
                 //We add croatian holidays to table:
                 if (!context.Holidays.Any())
@@ -456,9 +457,9 @@ namespace CalendarWebAPI.Data
 
                     context.Calendars.AddRange(calendars);
                     context.CalendarItems.AddRange(dbCalendarItems);
+                    context.SaveChanges(); // so we can read Id of calendarItems
 
                 }
-                context.SaveChanges(); // so we can read Id of calendarItems
 
                 //Shifts for test purposes - currently not in use
                 if (!context.Shifts.Any())
@@ -479,6 +480,8 @@ namespace CalendarWebAPI.Data
                         shifts.Add(s);
                     }
                     context.AddRange(shifts);
+                    context.SaveChanges();
+
                 }
 
                 if (!context.Applications.Any())
@@ -492,8 +495,9 @@ namespace CalendarWebAPI.Data
                             ShortName="SCHED"
                         }
                     });
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
+
                 var dbEventsIds = dbEvents.Select(x => x.Id).ToList();
                 if (!context.ApplicationEvents.Any())
                 {
@@ -507,6 +511,7 @@ namespace CalendarWebAPI.Data
                         }
                     }
                     context.ApplicationEvents.AddRange(appEvents);
+                    context.SaveChanges();
                 }
 
                 if (!context.Roles.Any())
@@ -523,6 +528,7 @@ namespace CalendarWebAPI.Data
                             Name="User"
                         }
                     });
+                    context.SaveChanges();
                 }
                 if (!context.Users.Any())
                 {
@@ -533,21 +539,26 @@ namespace CalendarWebAPI.Data
                             Id = Guid.NewGuid(),
                             Username="Admin",
                             Password="Admin",
-                            Email="admin@softly.hr"
+                            Email="admin@softly.hr",
+                            PersonId=context.People.Where(x=>x.FirstName=="Ivica" && x.LastName=="Andrun").Select(x=>x.Id).FirstOrDefault(),
                         },
                         new User()
                         {
                             Id = Guid.NewGuid(),
                             Username="ajurisic",
                             Password="ajurisic",
-                            Email="ajurisic@pmfst.hr"
+                            Email="ajurisic@pmfst.hr",
+                            PersonId=context.People.Where(x=>x.FirstName=="Andelo" && x.LastName=="Jurisic").Select(x=>x.Id).FirstOrDefault(),
                         }
                     });
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
+
 
                 if (!context.UserRoles.Any())
                 {
+                    // just for test purposes and easier recognition admin username is "Admin" and PersonId = (FirstName=Ivica, LastName = Andrun)
+                    // later we check if User permission is "Admin" or "User"
                     context.UserRoles.AddRange(new List<UserRole>()
                     {
                         new UserRole()
@@ -563,8 +574,9 @@ namespace CalendarWebAPI.Data
                             RoleId = context.Roles.Where(x=>x.Name=="User").Select(x=>x.Id).FirstOrDefault()
                         }
                     });
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
+
 
 
 
