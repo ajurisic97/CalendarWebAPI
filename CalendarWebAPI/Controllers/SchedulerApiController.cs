@@ -20,13 +20,13 @@ namespace CalendarWebAPI.Controllers
 
 
         [HttpGet("guids")]
-        public ActionResult<List<PersonScheduler>> GetPersonCalendar(DateTime dt, DateTime dt2, bool forScheduler, [FromQuery] List<Guid> guids)
+        public ActionResult<List<PersonScheduler>> GetPersonCalendar(DateTime dt, DateTime dt2, string appName, [FromQuery] List<Guid> guids)
         {
             if (!guids.Any() || guids.All(xx => Guid.Empty == xx))
                 return NotFound();
 
             
-            return Ok(_schedulerService.GetPersonCalendars(guids, dt, dt2,forScheduler).ToList());
+            return Ok(_schedulerService.GetPersonCalendars(guids, dt, dt2,appName).ToList());
         }
 
         
@@ -47,10 +47,10 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<List<RecurringSchedulerItems>> AddOnSaveChanges([FromBody] List<JObject> json)
+        public ActionResult<List<RecurringSchedulerItems>> AddOnSaveChanges(string appName,[FromBody] List<JObject> json)
         {
             List<RecurringSchedulerItems> rsi = RecurringSchedulersDto.FromJson(json);
-            _schedulerService.AddOnSaveChanges(rsi);
+            _schedulerService.AddOnSaveChanges(appName,rsi);
             return Ok();
         }
     }

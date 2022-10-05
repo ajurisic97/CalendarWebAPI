@@ -34,7 +34,7 @@ namespace CalendarWebAPI.Repositories
             return result;
         }
 
-        public IEnumerable<object> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2, bool forScheduler,string appName)
+        public IEnumerable<object> GetPersonCalendar(List<Guid> personIds,DateTime dt, DateTime dt2, string appName)
         {
             List<Models.PersonScheduler> personSchedulers = new List<Models.PersonScheduler>();
             List<Models.PersonPayRollScheduler> personPayRollSchedulers = new List<Models.PersonPayRollScheduler>();
@@ -43,10 +43,10 @@ namespace CalendarWebAPI.Repositories
             {
                 dt2 = DateTime.MaxValue;
             }
-            var eventIds = _calendarContext.ApplicationEvents.Where(a => a.Application.Name == appName).Select(e => e.Id).ToList();
+            var eventIds = _calendarContext.ApplicationEvents.Where(a => a.Application.Name == appName).Select(e => e.EventId).ToList();
             foreach (var personId in personIds)
             {
-                if (forScheduler)
+                if (appName=="Scheduler")
                 {
                     var schedulerItems = _calendarContext.SchedulerItems.Include(x => x.CalendarItems)
                                                                     .Include(x => x.Scheduler).ThenInclude(x => x.Event).ThenInclude(x => x.Recurring)
@@ -71,14 +71,16 @@ namespace CalendarWebAPI.Repositories
                                                                     
                 
             }
-            if (forScheduler)
+            if (appName=="Scheduler")
                 return personSchedulers;
             else
                 return personPayRollSchedulers;
         }
 
-        public void AddOnSaveChanges(List<Models.RecurringSchedulerItems> listSchedulers)
+        public void AddOnSaveChanges(string appName,List<Models.RecurringSchedulerItems> listSchedulers)
         {
+            var appId = _calendarContext.Applications.Where(x => x.Name == appName).Select(x=>x.Id).FirstOrDefault();
+            List<ApplicationEvent> appEvents = new List<ApplicationEvent>();
             List<SchedulerItem> schedulerItems = new List<SchedulerItem>();
             foreach (Models.RecurringSchedulerItems rsi in listSchedulers){
                 var eventType = rsi.EventType;
@@ -104,8 +106,20 @@ namespace CalendarWebAPI.Repositories
                 var schedulerId = _calendarContext.Schedulers.Where(s => s.PersonId.Equals(personId) && s.EventId.Equals(eventId)).Select(s => s.Id).FirstOrDefault();                
                 var dbScheduler = SchedulerItemsMapper.ToDatabase(schedulerId, (Guid)calendarItem.Id, schedulerItem);
                 dbScheduler.Id = Guid.NewGuid();
+                var tempAppEventsExists = appEvents.Any(x => x.ApplicationId == appId || x.EventId == eventId);
+                var dbAppEventsExists = _calendarContext.ApplicationEvents.Any(x => x.ApplicationId == appId || x.EventId == eventId);
+                if (!tempAppEventsExists && !dbAppEventsExists)
+                {
+                    appEvents.Add(new ApplicationEvent()
+                    {
+                        Id = Guid.NewGuid(),
+                        ApplicationId = appId,
+                        EventId = eventId,
+                    });
+                }
                 schedulerItems.Add(dbScheduler);
             }
+            _calendarContext.ApplicationEvents.AddRange(appEvents);
             _calendarContext.SchedulerItems.AddRange(schedulerItems);
             _calendarContext.SaveChanges();
 

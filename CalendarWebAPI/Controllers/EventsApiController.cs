@@ -21,9 +21,9 @@ namespace CalendarWebAPI.Controllers
             return _eventService.GetAll(applicationName).ToList();
         }
         [HttpPost]
-        public ActionResult<Event> Add(string eventName,string eventDescription)
+        public ActionResult<Event> Add(string appName,string eventName,string eventDescription)
         {
-            return _eventService.Add(eventName,eventDescription);
+            return _eventService.Add(appName,eventName,eventDescription);
         }
 
         [HttpDelete]

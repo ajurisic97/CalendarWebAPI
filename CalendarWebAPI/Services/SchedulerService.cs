@@ -11,14 +11,14 @@ namespace CalendarWebAPI.Services
         {
             _schedulerRepository = schedulerRepository;
         }
-        public IEnumerable<object> GetPersonCalendars(List<Guid> personId, DateTime dt, DateTime dt2, bool forScheduler)
+        public IEnumerable<object> GetPersonCalendars(List<Guid> peopleIds, DateTime dt, DateTime dt2,string appName)
         {
-            return _schedulerRepository.GetPersonCalendar(personId, dt, dt2, forScheduler);
+            return _schedulerRepository.GetPersonCalendar(peopleIds, dt, dt2,appName);
         }
 
-        public void AddOnSaveChanges(List<Models.RecurringSchedulerItems> recurringSchedulerItems)
+        public void AddOnSaveChanges(string appName,List<Models.RecurringSchedulerItems> recurringSchedulerItems)
         {
-            _schedulerRepository.AddOnSaveChanges(recurringSchedulerItems);
+            _schedulerRepository.AddOnSaveChanges(appName,recurringSchedulerItems);
         }
 
         public void EditOnSaveChanges(List<RecurringSchedulerItems> recurringSchedulerItems)

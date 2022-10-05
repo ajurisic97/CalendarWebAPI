@@ -19,13 +19,15 @@ namespace CalendarWebAPI.Repositories
             var appEvents = _dbContext.ApplicationEvents.Where(x => x.Application.Name == applicationName).Select(ae=>ae.EventId);
             return _dbContext.Events.Where(x=>appEvents.Contains(x.Id)).Select(x => EventMapper.FromDatabase(x));
         }
-        public Models.Event Add(string eventName, string eventDescription)
+        public Models.Event Add(string appName,string eventName, string eventDescription)
         {
             var dbRecurrings = _dbContext.Recurrings.Select(x => x.Id).ToList();
             var counter = _dbContext.Events.Max(x => x.Type);
             counter+= 1;
             List<Event> events = new List<Event>();
-            foreach(var dbRec in dbRecurrings)
+            List<ApplicationEvent> appEvents = new List<ApplicationEvent>();
+            var appId = _dbContext.Applications.Where(x => x.Name == appName).Select(x => x.Id).FirstOrDefault();
+            foreach (var dbRec in dbRecurrings)
             {
                 Event dbEvent = new Event
                 {
@@ -37,9 +39,16 @@ namespace CalendarWebAPI.Repositories
                     Coefficient = Decimal.Parse("1,0")
 
                 };
+                appEvents.Add(new ApplicationEvent()
+                {
+                    Id = Guid.NewGuid(),
+                    ApplicationId = appId,
+                    EventId = dbEvent.Id,
+                });
                 events.Add(dbEvent);
 
             }
+            _dbContext.ApplicationEvents.AddRange(appEvents);
             _dbContext.Events.AddRange(events);
             List<Scheduler> schedulers = new List<Scheduler>();
             var listPeople = _dbContext.People.ToList();

@@ -15,9 +15,9 @@ namespace CalendarWebAPI.Services
         {
             return _eventRepository.GetEvents(applicationName);
         }
-        public Event Add(string eventName,string eventDescription)
+        public Event Add(string appName,string eventName,string eventDescription)
         {
-            return _eventRepository.Add(eventName,eventDescription);
+            return _eventRepository.Add(appName,eventName,eventDescription);
         }
         public void Delete(int eventType)
         {
