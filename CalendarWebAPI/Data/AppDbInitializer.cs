@@ -8,6 +8,7 @@ namespace CalendarWebAPI.Data
 {
     public class AppDbInitializer
     {
+        // we check every table. If some table is empty we fill it with data. Order is important as some tables are connected to each other.
         public static void Seed(IApplicationBuilder applicationBuilder)
         {
             using(var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
@@ -30,6 +31,7 @@ namespace CalendarWebAPI.Data
                 //context.Creators.RemoveRange(context.Creators);
                 //context.SaveChanges();
 
+                //Creators - data seed - we only add 1 creator (Application) for now
                 if (!context.Creators.Any())
                 {
                     Creator c = new Creator
@@ -41,7 +43,7 @@ namespace CalendarWebAPI.Data
                     context.Creators.Add(c);
                     context.SaveChanges();
                 }
-                //Recurrings:
+                //Recurrings - data seed
                 if (!context.Recurrings.Any())
                 {
                     context.Recurrings.AddRange(new List<Recurring>()
@@ -70,8 +72,8 @@ namespace CalendarWebAPI.Data
                     });
                     context.SaveChanges(); // so events can be added
                 }
-                
-                //Events:
+
+                //Events - data seed
                 var allRecurrings = context.Recurrings.Select(x => x.Id);
                 if (!dbEvents.Any())
                 {
@@ -264,8 +266,8 @@ namespace CalendarWebAPI.Data
                     }
                     context.SaveChanges();
                 }
-                
-                //WorkingDays
+
+                //WorkingDays - data seed
                 if (!context.WorkingDays.Any())
                 {
                     context.WorkingDays.AddRange(new List<WorkingDay>()
@@ -308,7 +310,7 @@ namespace CalendarWebAPI.Data
                     });
                     context.SaveChanges();
                 }
-                //People:
+                //People - data seed
                 if (!context.People.Any())
                 {
                     List<Person> listPeople = new List<Person>();
@@ -339,7 +341,7 @@ namespace CalendarWebAPI.Data
                 }
 
 
-                // Confessions - maybe added
+                // Confessions - data seed
                 if (!context.Confessions.Any())
                 {
                     context.Confessions.AddRange(new List<Confession>()
@@ -410,10 +412,10 @@ namespace CalendarWebAPI.Data
                         holidays.Add(h);
                     }
                     context.Holidays.AddRange(holidays);
-                    
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
-                // CALENDAR + CALENDARITEMS
+
+                // CALENDAR + CALENDARITEMS - data seed
                 if (!context.Calendars.Any())
                 {
                     List<Calendar> calendars = new List<Calendar>();
@@ -461,7 +463,7 @@ namespace CalendarWebAPI.Data
 
                 }
 
-                //Shifts for test purposes - currently not in use
+                //Shifts - data seed (currently not used for aynthing, sample data)
                 if (!context.Shifts.Any())
                 {
                     List<Shift> shifts = new List<Shift>();
@@ -484,6 +486,7 @@ namespace CalendarWebAPI.Data
 
                 }
 
+                // Applications - data seed - since we only need "Scheduler" we only add this to it
                 if (!context.Applications.Any())
                 {
                     context.Applications.AddRange(new List<Application>()
@@ -498,6 +501,7 @@ namespace CalendarWebAPI.Data
                     context.SaveChanges();
                 }
 
+                // ApplicationEvents - data seed
                 var dbEventsIds = dbEvents.Select(x => x.Id).ToList();
                 if (!context.ApplicationEvents.Any())
                 {
@@ -513,7 +517,7 @@ namespace CalendarWebAPI.Data
                     context.ApplicationEvents.AddRange(appEvents);
                     context.SaveChanges();
                 }
-
+                // Roles -data seed - Sample data (only Roles are Admin and User)
                 if (!context.Roles.Any())
                 {
                     context.Roles.AddRange(new List<Role>() {
@@ -530,6 +534,7 @@ namespace CalendarWebAPI.Data
                     });
                     context.SaveChanges();
                 }
+                //Users - data seed
                 if (!context.Users.Any())
                 {
                     context.Users.AddRange(new List<User>()
@@ -554,7 +559,7 @@ namespace CalendarWebAPI.Data
                     context.SaveChanges();
                 }
 
-
+                // UserRoles - data seed
                 if (!context.UserRoles.Any())
                 {
                     // just for test purposes and easier recognition admin username is "Admin" and PersonId = (FirstName=Ivica, LastName = Andrun)
