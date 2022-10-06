@@ -25,12 +25,14 @@ builder.Services.AddScoped<SchedulerRepository>();
 builder.Services.AddScoped<EventRepository>();
 builder.Services.AddScoped<PersonRepository>();
 builder.Services.AddScoped<WorkingDayRepository>();
+builder.Services.AddScoped<UserRepository>();
 //SERVICES
 builder.Services.AddScoped<CalendarItemsService>();
 builder.Services.AddScoped<SchedulerService>();
 builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<PersonService>();
 builder.Services.AddScoped<WorkingDayService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddControllers().AddNewtonsoftJson(o =>

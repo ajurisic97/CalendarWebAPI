@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 using CalendarWebAPI.Services;
 using CalendarWebAPI.Models;
 using CalendarWebAPI.Dtos;
 using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Cors;
+
 
 namespace CalendarWebAPI.Controllers
 {

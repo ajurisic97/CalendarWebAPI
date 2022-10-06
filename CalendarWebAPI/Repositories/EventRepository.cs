@@ -6,7 +6,6 @@ namespace CalendarWebAPI.Repositories
 {
     public class EventRepository
     {
-        //REPO FOR AUTOMATICALLY ADDING RECURRINGS AND EVENTS
         private readonly CalendarContext _dbContext;
         public EventRepository(CalendarContext dbContext)
         {
