@@ -6,7 +6,7 @@ namespace CalendarWebAPI.Mappers
     {
         public static SchedulerItem FromDatabase(DbModels.SchedulerItem sidb)
         {
-            return new SchedulerItem(sidb.Id,sidb.StartTime, sidb.EndTime,sidb.CalendarItems.Date.Value,sidb.Description);
+            return new SchedulerItem(sidb.Id,sidb.StartTime, sidb.EndTime,sidb.CalendarItems.Date.Value,sidb.Description,(bool)sidb.CreatedByUser);
         }
 
         public static DbModels.SchedulerItem ToDatabase(Guid schedulerId,Guid calendarItemId,SchedulerItem si)
@@ -18,14 +18,15 @@ namespace CalendarWebAPI.Mappers
                 EndTime = si.EndTime,
                 SchedulerId = schedulerId,
                 CalendarItemsId = calendarItemId,
-                Description = si.Description
+                Description = si.Description,
+                CreatedByUser = si.CreatedByUser,
 
             };
         }
 
         public static PersonCalendar ToPersonCalendar(DbModels.SchedulerItem sidb)
         {
-            return new PersonCalendar(sidb.Id,sidb.CalendarItems.Date, sidb.Scheduler.Event.Coefficient, sidb.Scheduler.Event.Type, sidb.StartTime, sidb.EndTime,sidb.Description);
+            return new PersonCalendar(sidb.Id,sidb.CalendarItems.Date, sidb.Scheduler.Event.Coefficient, sidb.Scheduler.Event.Type, sidb.StartTime, sidb.EndTime,sidb.Description,(bool)sidb.CreatedByUser);
         }
 
         public static PersonCalendarPayRoll ToPersonCalendarPayRoll(DbModels.SchedulerItem sidb)

@@ -15,6 +15,7 @@ namespace CalendarWebAPI.DbModels
         public string Password { get; set; } = null!;
         public string Email { get; set; } = null!;
         public Guid? PersonId { get; set; }
+
         public virtual Person? Person { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }

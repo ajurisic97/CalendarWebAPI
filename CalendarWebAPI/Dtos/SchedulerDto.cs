@@ -14,7 +14,8 @@ namespace CalendarWebAPI.Dtos
             var endTime = json["EndTime"].ToObject<TimeSpan>();
             var date = json["Date"].ToObject<DateTime>();
             var description = json["Description"].ToObject<string>();
-            var schedulerItem = new SchedulerItem(Id,startTime, endTime, date,description);
+            var createdByUser = json["CreatedByUser"].ToObject<bool>();
+            var schedulerItem = new SchedulerItem(Id,startTime, endTime, date,description,createdByUser);
             return new SchedulerInfo(schedulerItem, schedulerId);
         }
 
@@ -25,8 +26,9 @@ namespace CalendarWebAPI.Dtos
             var endTime = json["EndTime"].ToObject<TimeSpan>();
             var date = json["Date"].ToObject<DateTime>();
             var description = json["Description"].ToObject<string>();
+            var createdByUser = json["CreatedByUser"].ToObject<bool>();
 
-            var schedulerItem = new SchedulerItem(null, startTime, endTime, date,description);
+            var schedulerItem = new SchedulerItem(null, startTime, endTime, date,description,createdByUser);
             return schedulerItem;
         }
 
@@ -37,8 +39,9 @@ namespace CalendarWebAPI.Dtos
             var endTime = json["EndTime"].ToObject<TimeSpan>();
             var date = json["Date"].ToObject<DateTime>();
             var description = json["Description"].ToObject<string>();
+            var createdByUser = json["CreatedByUser"].ToObject<bool>();
 
-            var schedulerItem = new SchedulerItem(id, startTime, endTime, date, description);
+            var schedulerItem = new SchedulerItem(id, startTime, endTime, date, description, createdByUser);
             return schedulerItem;
         }
     }

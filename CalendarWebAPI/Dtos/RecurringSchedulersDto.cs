@@ -22,13 +22,14 @@ namespace CalendarWebAPI.Dtos
                 var personId = json["personId"].ToObject<Guid>();
                 var eventType = json["title"].ToObject<int>();
                 var endDate = json["endDate"].ToObject<DateTime>();
+                var createdByUser = json["createdByUser"].ToObject<bool>();
                 var schedulerItemsId=Guid.NewGuid();
                 if (json.ContainsKey("eventId"))
                 {
                     schedulerItemsId = json["eventId"].ToObject<Guid>();
                 }
                 var description = json["description"].ToObject<string>();
-                var schedulerItem = new SchedulerItem(schedulerItemsId, startTime, endTime, date,description);
+                var schedulerItem = new SchedulerItem(schedulerItemsId, startTime, endTime, date,description,createdByUser);
                 var typeOfRecurring = json["Recurring"].ToObject<string>();
                 var scheduler = new RecurringSchedulerItems(personId, eventType, schedulerItem, typeOfRecurring, endDate);
                 items.Add(scheduler);

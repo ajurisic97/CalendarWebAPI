@@ -9,7 +9,8 @@
         public TimeSpan? StartTime;
         public TimeSpan? EndTime;
         public string Description;
-        public PersonCalendar(Guid id, DateTime? date, decimal coef, int dayType, TimeSpan? startTime, TimeSpan? endTime, string description)
+        public bool CreatedByUser;
+        public PersonCalendar(Guid id, DateTime? date, decimal coef, int dayType, TimeSpan? startTime, TimeSpan? endTime, string description, bool createdByUser)
         {
             Id = id;
             Date = date;
@@ -18,6 +19,7 @@
             StartTime = startTime;
             EndTime = endTime;
             Description = description;
+            CreatedByUser = createdByUser;
         }
     }
 
