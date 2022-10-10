@@ -14,6 +14,13 @@ namespace CalendarWebAPI.Controllers
             this.userService = userService;
         }
 
+
+        [HttpGet("getall")]
+        public ActionResult<List<Models.User>> GetUsers()
+        {
+            return userService.GetAll();
+        }
+
         [HttpGet]
         public ActionResult<object> GetUser(string username,string pw)
         {

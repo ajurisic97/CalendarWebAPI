@@ -9,7 +9,7 @@ namespace CalendarWebAPI.Mappers
             if (u == null)
                 return null;
             bool isAdmin = false;
-            if (u.UserRoles.Any(x => x.Role.Name == "Admin"))
+            if (u.UserRoles.Any(x => x.Role.Name == "Admin" || x.Role.Name=="Superadmin"))
             {
                 isAdmin = true;
             }
@@ -18,7 +18,7 @@ namespace CalendarWebAPI.Mappers
             {
                 personId = (Guid)u.PersonId;
             }
-            return new User(u.Username, isAdmin, personId);
+            return new User(u.Id,u.Username, isAdmin, personId,u.UserRoles.Select(x=>x.Role.Name).FirstOrDefault());
         }
     }
 }

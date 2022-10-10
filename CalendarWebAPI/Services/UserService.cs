@@ -14,5 +14,9 @@ namespace CalendarWebAPI.Services
         {
             return _userRepository.GetUser(u);
         }
+        public List<Models.User> GetAll()
+        {
+            return _userRepository.GetAll();
+        }
     }
 }
