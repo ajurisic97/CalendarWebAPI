@@ -1,6 +1,8 @@
-﻿using CalendarWebAPI.Services;
+﻿using CalendarWebAPI.Dtos;
+using CalendarWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace CalendarWebAPI.Controllers
 {
@@ -31,6 +33,22 @@ namespace CalendarWebAPI.Controllers
                 
             }
             return null;
+        }
+
+        [HttpPost]
+        public ActionResult<Models.User> Add([FromBody] JObject json)
+        {
+            var user = UserDto.FromJson(json);
+
+            return userService.Add(user);
+        }
+
+        [HttpPut]
+        public void EditUser([FromBody] JObject json)
+        {
+            var user = UserDto.FromJson(json);
+
+            userService.Edit(user);
         }
     }
 }

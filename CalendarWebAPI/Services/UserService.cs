@@ -18,5 +18,13 @@ namespace CalendarWebAPI.Services
         {
             return _userRepository.GetAll();
         }
+        public Models.User Add(Models.User user)
+        {
+            return _userRepository.Add(user);
+        }
+        public void Edit(Models.User user)
+        {
+            _userRepository.Edit(user);
+        }
     }
 }
