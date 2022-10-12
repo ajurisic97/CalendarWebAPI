@@ -9,12 +9,20 @@ namespace CalendarWebAPI.Mappers
             if (u == null)
                 return null;
             var personId = Guid.Empty;
-            if (!u.UserRoles.Any(x => x.Role.Name == "Admin" || x.Role.Name=="Superadmin"))
+            if (u.PersonId != null)
             {
-                if(u.PersonId!=null)
                 personId = (Guid)u.PersonId;
+
             }
-            return new User(u.Id,u.Username, personId,u.UserRoles.Select(x=>x.Role.Name).FirstOrDefault(),u.Email,u.Password);
+            //if (!u.UserRoles.Any(x => x.Role.Name == "Admin" || x.Role.Name=="Superadmin"))
+            //{
+            //    if(u.PersonId!=null)
+            //    personId = (Guid)u.PersonId;
+            //}
+            var user = new User(u.Id, u.Username, personId, u.UserRoles.Select(x => x.Role.Id).FirstOrDefault(), u.Email, u.Password);
+            if(u.UserRoles.Any())
+            user.Role = u.UserRoles.Select(x => x.Role.Name).First();
+            return user;
         }
 
         public static DbModels.User ToDatabase(User user)

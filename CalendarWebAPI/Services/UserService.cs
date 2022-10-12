@@ -26,5 +26,9 @@ namespace CalendarWebAPI.Services
         {
             _userRepository.Edit(user);
         }
+        public void Delete(Guid guid)
+        {
+            _userRepository.Delete(guid);
+        }
     }
 }

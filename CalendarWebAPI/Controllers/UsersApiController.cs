@@ -50,5 +50,11 @@ namespace CalendarWebAPI.Controllers
 
             userService.Edit(user);
         }
+
+        [HttpDelete]
+        public void DeleteUser(Guid guid)
+        {
+            userService.Delete(guid);
+        }
     }
 }
