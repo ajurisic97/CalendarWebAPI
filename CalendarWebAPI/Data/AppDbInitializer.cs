@@ -11,7 +11,7 @@ namespace CalendarWebAPI.Data
         // we check every table. If some table is empty we fill it with data. Order is important as some tables are connected to each other.
         public static void Seed(IApplicationBuilder applicationBuilder)
         {
-            using(var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<CalendarContext>();
                 var dbEvents = context.Events;
@@ -21,15 +21,19 @@ namespace CalendarWebAPI.Data
                 //context.Shifts.RemoveRange(context.Shifts);
                 //context.SchedulerItems.RemoveRange(context.SchedulerItems);
                 //context.Schedulers.RemoveRange(context.Schedulers);
+                //context.ApplicationEvents.RemoveRange(context.ApplicationEvents);
                 //context.Recurrings.RemoveRange(context.Recurrings);
                 //context.Events.RemoveRange(context.Events);
+                //context.Applications.RemoveRange(context.Applications);
+                //context.UserRoles.RemoveRange(context.UserRoles);
+                //context.Users.RemoveRange(context.Users);
                 //context.People.RemoveRange(context.People);
                 //context.Holidays.RemoveRange(context.Holidays);
                 //context.WorkingDays.RemoveRange(context.WorkingDays);
                 //context.CalendarItems.RemoveRange(context.CalendarItems);
                 //context.Calendar.RemoveRange(context.Calendar);
                 //context.Creators.RemoveRange(context.Creators);
-                //context.SaveChanges();
+                context.SaveChanges();
 
                 //Creators - data seed - we only add 1 creator (Application) for now
                 if (!context.Creators.Any())
@@ -37,7 +41,7 @@ namespace CalendarWebAPI.Data
                     Creator c = new Creator
                     {
                         Id = new Guid(),
-                        Name="Application"
+                        Name = "Application"
 
                     };
                     context.Creators.Add(c);
@@ -388,7 +392,7 @@ namespace CalendarWebAPI.Data
                     //IList<BaseClass.Holiday> holidays = croatianPublicHolidays.PublicHolidaysInformation(2022);
                     IDictionary<DateTime, string> _croHolidays = croatianPublicHolidays.PublicHolidayNames(2022);
                     List<Holiday> holidays = new List<Holiday>();
-                    foreach(var holiday in _croHolidays)
+                    foreach (var holiday in _croHolidays)
                     {
                         DateTime holidayDate = holiday.Key;
                         string holidayName = holiday.Value;
@@ -420,24 +424,24 @@ namespace CalendarWebAPI.Data
                 {
                     List<Calendar> calendars = new List<Calendar>();
                     List<CalendarItem> dbCalendarItems = new List<CalendarItem>();
-                    Creator creator = context.Creators.Where(x => x.Name=="Application").FirstOrDefault();
+                    Creator creator = context.Creators.Where(x => x.Name == "Application").FirstOrDefault();
                     Models.Creator modelCreator = CreatorMapper.FromDatabase(creator);
                     CalendarItemsRepository calendarItemsRepository = new CalendarItemsRepository(context);
-                    
+
                     //Parent calendar (for example country - Croatia)
                     Models.Calendar calMaster = new Models.Calendar(Guid.NewGuid(), null, modelCreator, 2022, "Master", new DateTime(2022, 1, 1), new DateTime(2022, 12, 31), DateTime.Now, true);
                     Calendar dbCalendar = CalendarMapper.ToDatabase(calMaster);
                     calendars.Add(dbCalendar);
                     // We fill calendarItems for parent calendar
                     List<CalendarItem> calItems = calendarItemsRepository.FillCalendarItems(calMaster);
-                    var datesExisting = context.CalendarItems.Where(x=>x.CalendarId == calMaster.Id).Select(x=>x.Date).ToList();
+                    var datesExisting = context.CalendarItems.Where(x => x.CalendarId == calMaster.Id).Select(x => x.Date).ToList();
                     var filtered = calItems.Where(x => !datesExisting.Contains(x.Date));
                     dbCalendarItems.AddRange(filtered);
 
 
 
                     //His child (for example State - Splitsko dalmatinska)
-                    Models.Calendar calMasterChild = new Models.Calendar(Guid.NewGuid(), calMaster, modelCreator, 2022, "2. razina", new DateTime(2022, 1, 1), new DateTime(2022, 1,1), DateTime.Now, true);
+                    Models.Calendar calMasterChild = new Models.Calendar(Guid.NewGuid(), calMaster, modelCreator, 2022, "2. razina", new DateTime(2022, 1, 1), new DateTime(2022, 1, 1), DateTime.Now, true);
                     Calendar dbChild = CalendarMapper.ToDatabase(calMasterChild);
                     calendars.Add(dbChild);
                     // We fill items for state:
@@ -467,17 +471,17 @@ namespace CalendarWebAPI.Data
                 if (!context.Shifts.Any())
                 {
                     List<Shift> shifts = new List<Shift>();
-                    foreach(var item in context.CalendarItems)
+                    foreach (var item in context.CalendarItems)
                     {
                         Shift s = new Shift
                         {
                             Id = Guid.NewGuid(),
                             CalendarItemId = item.Id,
                             Description = "Shift 1",
-                            StartTime=new TimeSpan(8,0,0), 
-                            EndTime=new TimeSpan(16,0,0), 
-                            ShiftType =1,
-                            IsActive=true,
+                            StartTime = new TimeSpan(8, 0, 0),
+                            EndTime = new TimeSpan(16, 0, 0),
+                            ShiftType = 1,
+                            IsActive = true,
                         };
                         shifts.Add(s);
                     }
@@ -496,6 +500,12 @@ namespace CalendarWebAPI.Data
                             Id = Guid.NewGuid(),
                             Name = "Scheduler",
                             ShortName="SCHED"
+                        },
+                        new Application()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "PayRoll",
+                            ShortName="PR"
                         }
                     });
                     context.SaveChanges();
@@ -507,9 +517,9 @@ namespace CalendarWebAPI.Data
                 {
                     List<ApplicationEvent> appEvents = new List<ApplicationEvent>();
                     var apps = context.Applications;
-                    foreach(var a in apps)
+                    foreach (var a in apps)
                     {
-                        foreach(var e in dbEventsIds)
+                        foreach (var e in dbEventsIds)
                         {
                             appEvents.Add(new ApplicationEvent() { Id = Guid.NewGuid(), ApplicationId = a.Id, EventId = e });
                         }
@@ -522,7 +532,7 @@ namespace CalendarWebAPI.Data
                 {
                     context.Roles.AddRange(new List<Role>() {
                         new Role()
-                        { 
+                        {
                             Id = Guid.NewGuid(),
                             Name="Admin"
                         },

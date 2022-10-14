@@ -27,14 +27,14 @@
     {
         public Guid Id { get; set; }
         public DateTime? Date;
-        public decimal Coef;
+        public decimal Coefficient;
         public int DayType;
         
         public PersonCalendarPayRoll(Guid id, DateTime? date, decimal coef, int dayType)
         {
             Id = id;
             Date = date;
-            Coef = coef;
+            Coefficient = coef;
             DayType = dayType;
         }
     }
