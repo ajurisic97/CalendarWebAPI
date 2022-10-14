@@ -513,6 +513,7 @@ namespace CalendarWebAPI.Data
 
                 // ApplicationEvents - data seed
                 var dbEventsIds = dbEvents.Select(x => x.Id).ToList();
+
                 if (!context.ApplicationEvents.Any())
                 {
                     List<ApplicationEvent> appEvents = new List<ApplicationEvent>();

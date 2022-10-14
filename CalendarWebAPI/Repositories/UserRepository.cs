@@ -1,5 +1,6 @@
 ﻿
 using CalendarWebAPI.DbModels;
+using CalendarWebAPI.Helper;
 using CalendarWebAPI.Mappers;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,12 +21,18 @@ namespace CalendarWebAPI.Repositories
         }
         public Models.User GetUser(Models.User user)
         {
-            var dbUser = _dbContext.Users.Where(u => u.Username.ToLower() == user.UserName.ToLower() && u.Password == user.Password).Include(x=>x.UserRoles).ThenInclude(x=>x.Role).Include(x=>x.Person).FirstOrDefault();
+            var hashing = new HashingManager();
+            var dbUser = _dbContext.Users.Include(x => x.UserRoles).ThenInclude(x => x.Role).Include(x => x.Person).AsEnumerable().Where(u => u.Username.ToLower() == user.UserName.ToLower() && hashing.Verify(user.Password, u.Password)).FirstOrDefault();
             var us = UserMapper.FromDatabase(dbUser);
+            //var dbUser = _dbContext.Users.Where(u => u.Username.ToLower() == user.UserName.ToLower() && u.Password == user.Password).Include(x => x.UserRoles).ThenInclude(x => x.Role).Include(x => x.Person).FirstOrDefault();
+            //var us = UserMapper.FromDatabase(dbUser);
             return us;
         }
         public Models.User Add(Models.User user)
         {
+            var hashing = new HashingManager();
+            var hash = hashing.HashToString(user.Password);
+            user.Password = hash;
             var dbUser = UserMapper.ToDatabase(user);
             //var role = _dbContext.Roles.Where(x => x.Id == user.RoleId).First();
             //var userRole = _dbContext.UserRoles.Where(x => x.Role == role);
