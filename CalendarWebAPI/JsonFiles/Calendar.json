@@ -1,7 +1,7 @@
 [
   {
     "Id": "2f3def82-6537-4ac5-9d03-17963c4913e4",
-    "PaentId": null,
+    "ParentId": null,
     "CreatorId": "ba4875f8-181e-41fb-ab72-3bc67c251ac7",
     "Year": 2022,
     "Description": "Master",

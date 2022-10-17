@@ -8,8 +8,8 @@ namespace CalendarWebAPI.Dtos
         public static Calendar FromJson(JObject json)
         {
             var id = json["Id"].ToObject<Guid?>();
-            var paentId=json["PaentId"].ToObject<Guid?>();
-            var parent = new Calendar(paentId, null, null, 0, null, null, null, null, null);
+            var parentId=json["ParentId"].ToObject<Guid?>();
+            var parent = new Calendar(parentId, null, null, 0, null, null, null, null, null);
             var creatorId = json["CreatorId"].ToObject<Guid?>();
             var creator = new Creator(creatorId, "");
             var year = json["Year"].ToObject<int>();
