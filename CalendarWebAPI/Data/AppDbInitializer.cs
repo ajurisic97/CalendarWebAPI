@@ -535,6 +535,11 @@ namespace CalendarWebAPI.Data
                         new Role()
                         {
                             Id = Guid.NewGuid(),
+                            Name="Superadmin"
+                        },
+                        new Role()
+                        {
+                            Id = Guid.NewGuid(),
                             Name="Admin"
                         },
                         new Role()
@@ -548,13 +553,22 @@ namespace CalendarWebAPI.Data
                 //Users - data seed
                 if (!context.Users.Any())
                 {
+                    var hashing = new Helper.HashingManager();
                     context.Users.AddRange(new List<User>()
                     {
                         new User()
                         {
                             Id = Guid.NewGuid(),
+                            Username="Superadmin",
+                            Password=hashing.HashToString("Superadmin"),
+                            Email="superadmin@softly.hr",
+                            PersonId=null,
+                        },
+                        new User()
+                        {
+                            Id = Guid.NewGuid(),
                             Username="Admin",
-                            Password="Admin",
+                            Password=hashing.HashToString("Admin"),
                             Email="admin@softly.hr",
                             PersonId=context.People.Where(x=>x.FirstName=="Ivica" && x.LastName=="Andrun").Select(x=>x.Id).FirstOrDefault(),
                         },
@@ -562,7 +576,7 @@ namespace CalendarWebAPI.Data
                         {
                             Id = Guid.NewGuid(),
                             Username="ajurisic",
-                            Password="ajurisic",
+                            Password=hashing.HashToString("ajurisic"),
                             Email="ajurisic@pmfst.hr",
                             PersonId=context.People.Where(x=>x.FirstName=="Andelo" && x.LastName=="Jurisic").Select(x=>x.Id).FirstOrDefault(),
                         }
@@ -577,6 +591,12 @@ namespace CalendarWebAPI.Data
                     // later we check if User permission is "Admin" or "User"
                     context.UserRoles.AddRange(new List<UserRole>()
                     {
+                        new UserRole()
+                        {
+                            Id = Guid.NewGuid(),
+                            UserId = context.Users.Where(x=>x.Username=="Superadmin").Select(x=>x.Id).FirstOrDefault(),
+                            RoleId = context.Roles.Where(x=>x.Name=="Superadmin").Select(x=>x.Id).FirstOrDefault()
+                        },
                         new UserRole()
                         {
                             Id = Guid.NewGuid(),
