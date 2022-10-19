@@ -309,7 +309,7 @@ namespace CalendarWebAPI.Data
                         new WorkingDay()
                         {
                             Name="Sunday",
-                            IsWorkingDay = true
+                            IsWorkingDay = false
                         }
                     });
                     context.SaveChanges();

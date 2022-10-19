@@ -107,7 +107,9 @@ namespace CalendarWebAPI.Repositories
             for (int i = 0; i <= rangeDates; i++)
             {
                 var weekend = false;
-                var currentDay = tempDate.ToString("dddd");
+                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
+
+                var currentDay = tempDate.ToString("dddd",culture);
                 var workingDay = WeekDays.Where(x => x.Name == currentDay).Select(x=>x.IsWorkingDay).FirstOrDefault();
                 if(currentDay.Equals("Sunday") || currentDay.Equals("Saturday"))
                 {
