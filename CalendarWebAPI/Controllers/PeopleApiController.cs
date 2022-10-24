@@ -21,6 +21,13 @@ namespace CalendarWebAPI.Controllers
             return _personService.GetAll().ToList();
         }
 
+        [HttpGet]
+        [Route("/getperson")]
+        public Person GetPerson(Guid guid)
+        {
+            return _personService.GetPerson(guid);
+        }
+
         [HttpPost]
         public ActionResult<Person> Add(Person person)
         {

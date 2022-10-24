@@ -4,6 +4,12 @@ using CalendarWebAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Converters;
 using CalendarWebAPI.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using CalendarWebAPI.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +24,17 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 //REPOSITORIES
 builder.Services.AddScoped<CalendarItemsRepository>();
 builder.Services.AddScoped<SchedulerRepository>();
@@ -36,6 +52,9 @@ builder.Services.AddScoped<WorkingDayService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
 
+builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddControllers().AddNewtonsoftJson(o =>
 {
@@ -45,7 +64,20 @@ builder.Services.AddDbContext<CalendarContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
 
+    };
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -54,11 +86,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseRouting();
 app.UseHttpsRedirection();
 app.UseCors("CORSPolicy");
+app.UseAuthentication();
 app.UseAuthorization();
 AppDbInitializer.Seed(app);
+app.UseMiddleware<AuthorizationMiddleware>();
 app.MapControllers();
 
 app.Run();

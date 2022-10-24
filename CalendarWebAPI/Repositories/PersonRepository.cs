@@ -11,6 +11,10 @@ namespace CalendarWebAPI.Repositories
             _calendarContext = calendarContext;
         }
 
+        public Models.Person GetById(Guid guid)
+        {
+            return _calendarContext.People.Where(x => x.Id == guid).Select(x=>PersonMapper.FromDatabase(x)).FirstOrDefault();
+        }
         public IEnumerable<Models.Person> GetPeople()
         {
             return _calendarContext.People.Select(x => PersonMapper.FromDatabase(x));

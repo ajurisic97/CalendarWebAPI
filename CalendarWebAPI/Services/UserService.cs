@@ -10,9 +10,9 @@ namespace CalendarWebAPI.Services
         {
             _userRepository = userRepository;
         }
-        public Models.User GetUser(Models.User u)
+        public Models.User GetUser(string username)
         {
-            return _userRepository.GetUser(u);
+            return _userRepository.GetUser(username);
         }
         public List<Models.User> GetAll()
         {
@@ -29,6 +29,17 @@ namespace CalendarWebAPI.Services
         public void Delete(Guid guid)
         {
             _userRepository.Delete(guid);
+        }
+
+        public string Login(string username, string password)
+        {
+            return _userRepository.Login(username, password);
+            
+        }
+
+        public void Signout()
+        {
+            _userRepository.Signout();
         }
     }
 }

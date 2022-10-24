@@ -1,5 +1,6 @@
 ﻿using CalendarWebAPI.Dtos;
 using CalendarWebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -10,51 +11,86 @@ namespace CalendarWebAPI.Controllers
     [ApiController]
     public class UsersApiController : ControllerBase
     {
-        public UserService userService;
+        public UserService _userService;
+        
         public UsersApiController(UserService userService)
         {
-            this.userService = userService;
+            this._userService = userService;
         }
 
 
         [HttpGet("getall")]
+        [Authorize(Roles ="Superadmin,Admin,User")]
         public ActionResult<List<Models.User>> GetUsers()
         {
-            return userService.GetAll();
+            return _userService.GetAll();
         }
 
         [HttpGet]
-        public ActionResult<object> GetUser(string username,string pw)
+        [Authorize(Roles = "Superadmin,Admin,User")]
+        public ActionResult<object> GetUser(string username)
         {
-            Models.User user = new Models.User(username, pw);
-            if(user != null)
+            if (username != null)
             {
-                return userService.GetUser(user);
-                
+                return _userService.GetUser(username);
+
             }
             return null;
+
         }
 
-        [HttpPost]
-        public ActionResult<Models.User> Add([FromBody] JObject json)
-        {
-            var user = UserDto.FromJson(json);
-
-            return userService.Add(user);
-        }
 
         [HttpPut]
+        [Authorize(Roles = "Superadmin")]
+
         public void EditUser([FromBody] JObject json)
         {
             var user = UserDto.FromJson(json);
 
-            userService.Edit(user);
+            _userService.Edit(user);
+            
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Superadmin")]
+
         public void DeleteUser(Guid guid)
         {
-            userService.Delete(guid);
+            _userService.Delete(guid);
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult Login(string username, string password)
+        {
+            var response = _userService.Login(username, password);
+            if(response == "User not found")
+            {
+                return NotFound(response);
+            }
+            else
+            {
+                //Request.Headers.Add("Authorization", response);
+                return Ok(response);
+            }
+        }
+        [AllowAnonymous]
+        [Route("/signup")]
+        [HttpPost]
+        public IActionResult Signup([FromBody] JObject json)
+        {
+            var user = UserDto.FromJson(json);
+
+            return Ok(_userService.Add(user));
+        }
+
+        [AllowAnonymous]
+        [Route("/signout")]
+        [HttpPost]
+        public void Signout()
+        {
+            _userService.Signout();
+        }
+
     }
 }

@@ -10,7 +10,10 @@ namespace CalendarWebAPI.Services
         {
             _personRepository = personRepository;
         }
-
+        public Person GetPerson(Guid guid)
+        {
+            return _personRepository.GetById(guid);
+        }
         public IEnumerable<Person> GetAll()
         {
             return _personRepository.GetPeople();
