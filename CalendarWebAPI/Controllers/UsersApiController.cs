@@ -79,9 +79,18 @@ namespace CalendarWebAPI.Controllers
         [HttpPost]
         public IActionResult Signup([FromBody] JObject json)
         {
+            
             var user = UserDto.FromJson(json);
 
-            return Ok(_userService.Add(user));
+            var response = _userService.Add(user);
+            if (response == null)
+            {
+                return BadRequest(403);
+            }
+            else
+            {
+                return Ok(response);
+            }
         }
 
         [AllowAnonymous]

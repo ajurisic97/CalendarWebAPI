@@ -66,6 +66,10 @@ namespace CalendarWebAPI.Repositories
                 _dbContext.Users.Add(dbUser);
                 _dbContext.SaveChanges();
             }
+            else
+            {
+                return null;
+            }
             var result = _dbContext.Users.SingleOrDefault(x => x.Username == user.UserName);
             return UserMapper.FromDatabase(result);
         }
