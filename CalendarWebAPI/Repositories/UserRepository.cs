@@ -73,34 +73,53 @@ namespace CalendarWebAPI.Repositories
             var result = _dbContext.Users.SingleOrDefault(x => x.Username == user.UserName);
             return UserMapper.FromDatabase(result);
         }
-        public void Edit(Models.User user)
+        public void Edit(Models.User user, bool adminEdit, string newPassword)
         {
             
             var dbUser = UserMapper.ToDatabase(user);
-            //dbUser.Password = current.Password;
-            List<UserRole> userRoles = new List<UserRole>();
-            _dbContext.UserRoles.RemoveRange(_dbContext.UserRoles.Where(x => x.UserId == dbUser.Id && x.RoleId !=user.RoleId).ToList());
-            if (user.RoleId != Guid.Empty)
+            if (adminEdit)
             {
-                var role = _dbContext.Roles.Where(x => x.Id == user.RoleId).First();
-                var dbUR = new UserRole()
+                List<UserRole> userRoles = new List<UserRole>();
+                _dbContext.UserRoles.RemoveRange(_dbContext.UserRoles.Where(x => x.UserId == dbUser.Id && x.RoleId != user.RoleId).ToList());
+                if (user.RoleId != Guid.Empty)
                 {
-                    Id = Guid.NewGuid(),
-                    UserId = user.Id,
-                    RoleId = role.Id,
-                };
-                
-                userRoles.Add(dbUR);
-                
-                dbUser.UserRoles = userRoles;
-                if(!_dbContext.UserRoles.Any(x=>x.RoleId == dbUR.RoleId && x.UserId == user.Id))
-                _dbContext.UserRoles.Add(dbUR);
+                    var role = _dbContext.Roles.Where(x => x.Id == user.RoleId).First();
+                    var dbUR = new UserRole()
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = user.Id,
+                        RoleId = role.Id,
+                    };
 
+                    userRoles.Add(dbUR);
+
+                    dbUser.UserRoles = userRoles;
+                    if (!_dbContext.UserRoles.Any(x => x.RoleId == dbUR.RoleId && x.UserId == user.Id))
+                        _dbContext.UserRoles.Add(dbUR);
+
+                }
+                _dbContext.Users.Update(dbUser);
+                _dbContext.Entry(dbUser).Property(x => x.Password).IsModified = false;
+                _dbContext.SaveChanges();
             }
+            else
+            {
+                var authUser = Authenticate(user);
+                if (authUser != null)
+                {
+                    HashingManager hashing = new HashingManager();
 
-            _dbContext.Users.Update(dbUser);
-            _dbContext.Entry(dbUser).Property(x => x.Password).IsModified = false;
-            _dbContext.SaveChanges();
+                    dbUser.Password = hashing.HashToString(newPassword);
+
+                    _dbContext.ChangeTracker.Clear();
+                    _dbContext.Users.Update(dbUser);
+                    _dbContext.Entry(dbUser).Property(x => x.PersonId).IsModified = false;
+                    _dbContext.SaveChanges();
+                }
+                //_dbContext.Users.Update(dbUser);
+                //_dbContext.Entry(dbUser).Property(x => x.UserRoles).IsModified = false;
+                //_dbContext.SaveChanges();
+            }
         }
 
         public void Delete(Guid guid)

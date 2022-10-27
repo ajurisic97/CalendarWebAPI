@@ -1,12 +1,14 @@
-﻿using CalendarWebAPI.Models;
+﻿using Microsoft.AspNetCore.Authorization;
 using CalendarWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace CalendarWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Superadmin,Admin,User")]
     public class PeopleApiController : ControllerBase
     {
         public PersonService _personService;
@@ -16,20 +18,20 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Person>> GetAll()
+        public ActionResult<List<Models.Person>> GetAll()
         {
             return _personService.GetAll().ToList();
         }
 
         [HttpGet]
         [Route("/getperson")]
-        public Person GetPerson(Guid guid)
+        public Models.Person GetPerson(Guid guid)
         {
             return _personService.GetPerson(guid);
         }
 
         [HttpPost]
-        public ActionResult<Person> Add(Person person)
+        public ActionResult<Models.Person> Add(Models.Person person)
         {
             return _personService.Add(person);
         }

@@ -1,6 +1,7 @@
 ﻿using CalendarWebAPI.Dtos;
 using CalendarWebAPI.Models;
 using CalendarWebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -10,6 +11,7 @@ namespace CalendarWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,User")]
     public class SchedulerApiController : ControllerBase
     {
         public SchedulerService _schedulerService;
@@ -20,7 +22,7 @@ namespace CalendarWebAPI.Controllers
 
 
         [HttpGet("guids")]
-        [Authorize(Roles = "Admin,User")]
+        [AllowAnonymous]
         public ActionResult<List<PersonScheduler>> GetPersonCalendar(DateTime dt, DateTime dt2, string appName, [FromQuery] List<Guid> guids)
         {
             if (!guids.Any() || guids.All(xx => Guid.Empty == xx))
@@ -32,7 +34,6 @@ namespace CalendarWebAPI.Controllers
 
         
         [HttpPut]
-        [Authorize(Roles = "Admin,User")]
         public void EditOnSaveChanges([FromBody] List<JObject> json)
         {
 
@@ -41,7 +42,6 @@ namespace CalendarWebAPI.Controllers
             _schedulerService.EditOnSaveChanges(rsi);
         }
         [HttpDelete("{ids}")]
-        [Authorize(Roles = "Admin,User")]
         public void Delete(string ids)
         {
             var newIds = ids.Split(" ").Select(s => Guid.Parse(s)).ToList(); 
@@ -50,7 +50,6 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,User")]
         public ActionResult<List<RecurringSchedulerItems>> AddOnSaveChanges(string appName,[FromBody] List<JObject> json)
         {
             List<RecurringSchedulerItems> rsi = RecurringSchedulersDto.FromJson(json);

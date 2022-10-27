@@ -19,7 +19,7 @@ namespace CalendarWebAPI.Mappers
             //    if(u.PersonId!=null)
             //    personId = (Guid)u.PersonId;
             //}
-            var user = new User(u.Id, u.Username, personId, u.UserRoles.Select(x => x.Role.Id).FirstOrDefault(), u.Email, u.Password);
+            var user = new User(u.Id, u.Username, personId, u.UserRoles.Select(x => x.Role.Id).FirstOrDefault(), u.Email, "");
             if(u.UserRoles.Any())
             user.Role = u.UserRoles.Select(x => x.Role.Name).First();
             return user;

@@ -27,8 +27,22 @@ namespace CalendarWebAPI.Dtos
                 roleId = role.ToObject<Guid>();
             }
             var email = json["Email"].ToString();
+
             var password = json["Password"].ToString();
             return new User(id,username,personId,roleId,email,password);
+        }
+        public static User FromJsonPerson(JObject json)
+        {
+            var jsonId = json["Id"];
+            var id = Guid.NewGuid();
+            if (jsonId.ToString() != "")
+            {
+                id = jsonId.ToObject<Guid>();
+            }
+            var username = json["Username"].ToString();
+            var email = json["Email"].ToString();
+            var password = json["Old-password"].ToString();
+            return new User(id, username, Guid.Empty, Guid.Empty, email, password);
         }
     }
 }

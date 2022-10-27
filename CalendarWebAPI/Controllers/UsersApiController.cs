@@ -20,14 +20,12 @@ namespace CalendarWebAPI.Controllers
 
 
         [HttpGet("getall")]
-        [Authorize(Roles ="Superadmin,Admin,User")]
         public ActionResult<List<Models.User>> GetUsers()
         {
             return _userService.GetAll();
         }
 
         [HttpGet]
-        [Authorize(Roles = "Superadmin,Admin,User")]
         public ActionResult<object> GetUser(string username)
         {
             if (username != null)
@@ -39,15 +37,25 @@ namespace CalendarWebAPI.Controllers
 
         }
 
-
         [HttpPut]
-        [Authorize(Roles = "Superadmin")]
+        [Authorize(Roles = "Superadmin,Admin,User")]
 
         public void EditUser([FromBody] JObject json)
         {
-            var user = UserDto.FromJson(json);
-
-            _userService.Edit(user);
+            Models.User user;
+            var newPassword = "";
+            var adminEdit = false;
+            if (json["IsAdminEdit"] != null)
+            {
+                adminEdit = true;
+                user = UserDto.FromJson(json);
+            }
+            else
+            {
+                user = UserDto.FromJsonPerson(json);
+                newPassword = json["Password"].ToString();
+            }
+            _userService.Edit(user,adminEdit,newPassword);
             
         }
 

@@ -22,9 +22,9 @@ namespace CalendarWebAPI.Services
         {
             return _userRepository.Add(user);
         }
-        public void Edit(Models.User user)
+        public void Edit(Models.User user, bool adminEdit, string newPw)
         {
-            _userRepository.Edit(user);
+            _userRepository.Edit(user,adminEdit, newPw);
         }
         public void Delete(Guid guid)
         {

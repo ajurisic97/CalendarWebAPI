@@ -1,5 +1,6 @@
 ﻿using CalendarWebAPI.DbModels;
 using CalendarWebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Superadmin")]
         public void Update(WorkingDay workingDay)
         {
             _workingDaysService.UpdateWorkingDays(workingDay);
