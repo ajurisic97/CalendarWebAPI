@@ -7,7 +7,7 @@ namespace CalendarWebAPI.Mappers
         public static Person FromDatabase(DbModels.Person person)
         {
             return new Person(person.Id, person.Code, person.FirstName, person.LastName, person.Adress, person.PostalCode, person.City, person.Country, person.CountryOfResidence,
-                person.DateOfBirth, person.Gender, person.PersonalIdentificationNumber, person.RecordDtModified, person.RowVersion, person.ImageUrl, person.Description);
+                person.DateOfBirth, person.Gender, person.PersonalIdentificationNumber, person.ImageUrl, person.Description);
         }
 
         public static DbModels.Person ToDatabase(Person person)
@@ -26,8 +26,6 @@ namespace CalendarWebAPI.Mappers
                 DateOfBirth = person.DateOfBirth,
                 Gender = person.Gender,
                 PersonalIdentificationNumber = person.PersonalIdentificationNumber,
-                RecordDtModified = person.RecordDtModified,
-                RowVersion = person.RowVersion,
                 ImageUrl = person.ImageUrl,
                 Description = person.Description,
 

@@ -2,7 +2,9 @@
 using CalendarWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Text.Json;
+using Newtonsoft.Json.Linq;
+using CalendarWebAPI.Dtos;
 
 namespace CalendarWebAPI.Controllers
 {
@@ -31,9 +33,26 @@ namespace CalendarWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Models.Person> Add(Models.Person person)
+        [Authorize(Roles = "Superadmin,Admin,User")]
+        public ActionResult<Models.Person> Add([FromBody] JObject person)
         {
-            return _personService.Add(person);
+            Models.Person p = PersonDto.FromJson(person);
+            return _personService.Add(p);
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Superadmin,User")]
+        public ActionResult<Models.Person> Edit([FromBody] JObject person)
+        {
+            Models.Person p = PersonDto.FromJson(person);
+            return _personService.Edit(p);
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Superadmin,User")]
+        public void Delete(Guid guid)
+        {
+             _personService.Delete(guid);
         }
     }
 }

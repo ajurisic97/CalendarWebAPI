@@ -80,7 +80,9 @@ namespace CalendarWebAPI.Repositories
             if (adminEdit)
             {
                 List<UserRole> userRoles = new List<UserRole>();
-                _dbContext.UserRoles.RemoveRange(_dbContext.UserRoles.Where(x => x.UserId == dbUser.Id && x.RoleId != user.RoleId).ToList());
+                var currentUserRoles = _dbContext.UserRoles.Where(x => x.UserId == dbUser.Id).AsNoTracking();
+                if(currentUserRoles!=dbUser.UserRoles)
+                _dbContext.UserRoles.RemoveRange(currentUserRoles.ToList());
                 if (user.RoleId != Guid.Empty)
                 {
                     var role = _dbContext.Roles.Where(x => x.Id == user.RoleId).First();
@@ -91,13 +93,14 @@ namespace CalendarWebAPI.Repositories
                         RoleId = role.Id,
                     };
 
-                    userRoles.Add(dbUR);
-
+                    //userRoles.Add(dbUR);
+                    _dbContext.UserRoles.Add(dbUR);
                     dbUser.UserRoles = userRoles;
-                    if (!_dbContext.UserRoles.Any(x => x.RoleId == dbUR.RoleId && x.UserId == user.Id))
-                        _dbContext.UserRoles.Add(dbUR);
+                    //if (!_dbContext.UserRoles.Any(x => x.RoleId == dbUR.RoleId && x.UserId == user.Id))
+                    //    _dbContext.UserRoles.Add(dbUR);
 
                 }
+                var currentUser = _dbContext.Users.Where(x=>x.Id == dbUser.Id).AsNoTracking().First();
                 _dbContext.Users.Update(dbUser);
                 _dbContext.Entry(dbUser).Property(x => x.Password).IsModified = false;
                 _dbContext.SaveChanges();

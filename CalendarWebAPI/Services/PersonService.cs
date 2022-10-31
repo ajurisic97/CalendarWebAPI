@@ -23,5 +23,15 @@ namespace CalendarWebAPI.Services
         {
             return _personRepository.Add(person);
         }
+
+        public Person Edit(Person person)
+        {
+            return _personRepository.Edit(person);
+        }
+
+        public void Delete(Guid guid)
+        {
+            _personRepository.Delete(guid);
+        }
     }
 }

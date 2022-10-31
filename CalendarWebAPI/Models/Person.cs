@@ -29,14 +29,12 @@ namespace CalendarWebAPI.Models
         public string PersonalIdentificationNumber { get; set; }
         public DateTime? RecordDtModified { get; set; }
 
-        [Timestamp]
-        public byte[]? RowVersion { get; set; }
-
         public string? ImageUrl { get; set; }
 
         public string? Description { get; set; }
-
-        public Person(Guid? id, string? code, string firstName, string lastName, string? adress, string? postalCode, string? city, string? country, string? countryOfResidence, DateTime? dateOfBirth, string gender, string personalIdentificationNumber, DateTime? recordDtModified, byte[]? rowVersion, string? imageUrl, string? description)
+        [Timestamp]
+        public byte[]? RowVersion { get; set; }
+        public Person(Guid? id, string? code, string firstName, string lastName, string? adress, string? postalCode, string? city, string? country, string? countryOfResidence, DateTime? dateOfBirth, string gender, string personalIdentificationNumber, string? imageUrl, string? description)
         {
             Id = id;
             Code = code;
@@ -50,8 +48,7 @@ namespace CalendarWebAPI.Models
             DateOfBirth = dateOfBirth;
             Gender = gender;
             PersonalIdentificationNumber = personalIdentificationNumber;
-            RecordDtModified = recordDtModified;
-            RowVersion = rowVersion;
+            RecordDtModified = DateTime.UtcNow;
             ImageUrl = imageUrl;
             Description = description;
         }
