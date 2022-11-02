@@ -34,6 +34,31 @@ namespace CalendarWebAPI.Repositories
             var users = _dbContext.Users.Include(x=>x.UserRoles).ThenInclude(x=>x.Role).Select(x => UserMapper.FromDatabase(x)).ToList();
             return users;
         }
+
+        public Models.UserViewModel GetUsersByPage(string? filter,int pageNumber, int pageSize)
+        {
+            List<User> dbUsers;
+            if (filter != null)
+            {
+                dbUsers = _dbContext.Users
+                    .Include(x => x.UserRoles)
+                    .ThenInclude(x => x.Role)
+                    .Where(u => u.Username.ToLower().Contains(filter.ToLower()))
+                    .ToList();
+            }
+            else
+            {
+                dbUsers = _dbContext.Users.Include(x => x.UserRoles).ThenInclude(x => x.Role).ToList();
+            }
+            var countUsers = dbUsers.Count();
+            var usersResponse = dbUsers
+                .OrderBy(x => x.Username)
+                .Skip((pageNumber-1)*pageSize)
+                .Take(pageSize)
+                .Select(x => UserMapper.FromDatabase(x)).ToList();
+            Models.UserViewModel users = new Models.UserViewModel(usersResponse, countUsers);
+            return users;
+        }
         public Models.User GetUser(string username)
         {
             //var hashing = new HashingManager();

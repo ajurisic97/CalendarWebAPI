@@ -11,7 +11,25 @@ namespace CalendarWebAPI.Repositories
         {
             _calendarContext = calendarContext;
         }
-
+        public Models.PersonViewModel GetPeopleByPage(string? filter, int pageNumber, int pageSize)
+        {
+            List<Person> peopleResponse;
+            if (filter != null){
+                peopleResponse = _calendarContext.People.Where(p => p.FirstName.ToLower().Contains(filter.ToLower()) || p.LastName.ToLower().Contains(filter.ToLower())).ToList();
+            }
+            else
+            {
+                peopleResponse = _calendarContext.People.ToList();
+            }
+            var countPeople = peopleResponse.Count();
+            List<Models.Person> people = peopleResponse
+                .OrderBy(x => x.LastName)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => PersonMapper.FromDatabase(x)).ToList();
+            Models.PersonViewModel pvm = new Models.PersonViewModel(people, countPeople);
+            return pvm;
+        }
         public Models.Person GetById(Guid guid)
         {
             return _calendarContext.People.Where(x => x.Id == guid).Select(x=>PersonMapper.FromDatabase(x)).FirstOrDefault();

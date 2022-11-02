@@ -18,6 +18,13 @@ namespace CalendarWebAPI.Controllers
             this._userService = userService;
         }
 
+        [Route("/getusers/")]
+        [HttpGet]
+        public ActionResult<Models.UserViewModel> GetUsersByPage(string? filter,int page = 1, int pageSize = 10)
+        {
+            return _userService.GetUsersByPage(filter,page, pageSize);
+        }
+
 
         [HttpGet("getall")]
         public ActionResult<List<Models.User>> GetUsers()

@@ -18,6 +18,10 @@ namespace CalendarWebAPI.Services
         {
             return _personRepository.GetPeople();
         }
+        public Models.PersonViewModel GetPeopleByPage(string? search,int page, int pageSize)
+        {
+            return _personRepository.GetPeopleByPage(search, page, pageSize);
+        }
 
         public Person Add(Person person)
         {

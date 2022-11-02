@@ -14,9 +14,15 @@ namespace CalendarWebAPI.Services
         {
             return _userRepository.GetUser(username);
         }
+
         public List<Models.User> GetAll()
         {
             return _userRepository.GetAll();
+        }
+
+        public Models.UserViewModel GetUsersByPage(string? filter,int page, int pageSize)
+        {
+            return _userRepository.GetUsersByPage(filter,page,pageSize);
         }
         public Models.User Add(Models.User user)
         {

@@ -31,7 +31,12 @@ namespace CalendarWebAPI.Controllers
         {
             return _personService.GetPerson(guid);
         }
-
+        [Route("/getpeople/")]
+        [HttpGet]
+        public ActionResult<Models.PersonViewModel> GetPeopleByPage(string? search,int page = 1, int pageSize = 10)
+        {
+            return _personService.GetPeopleByPage(search,page, pageSize);
+        }
         [HttpPost]
         [Authorize(Roles = "Superadmin,Admin,User")]
         public ActionResult<Models.Person> Add([FromBody] JObject person)
