@@ -86,7 +86,7 @@ namespace CalendarWebAPI.Repositories
         {
             
             List<Models.CalendarItem> calItems = new List<Models.CalendarItem>();
-            var firstParent = _dbContext.Calendars.Where(c => c.Parent == null).Select(x => x.Id).FirstOrDefault();
+            var firstParent = _dbContext.Calendars.Where(c => c.Parent == null && dt.Value.Year == c.Year).Select(x => x.Id).FirstOrDefault();
             var test = GetReccursiveItems(dt, dt2, firstParent, calItems);
             var filteredParameters = test.Select(x => CalendarItemsMapper.FilterData(x)).ToList();
             return filteredParameters;
